@@ -56,7 +56,7 @@ public class Pokemon extends Game{
 		new GameFrame("Pokemon",this);
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
 		tileMap = new TileMap((short)20,(short)10,(short)20,(short)20,tileTextures);
-		player = new PlayerEntity((short)9, (short)3, (short)35, (short)35, (byte)0, (byte)0, (short)50, (short)0, playerImages);
+		player = new PlayerEntity((short)9, (short)3, (short)35, (short)35, (byte)0, (byte)0, (short)100, (short)0, playerImages);
 		
 		/**
 		 * Start the game loop
@@ -139,17 +139,17 @@ public class Pokemon extends Game{
 			player.setMoving(true);
 			player.setDirection((byte)0);
 			player.setAnimation((byte) 6);
-			player.setDy(player.getY() - 1);
-			player.setY(player.getY() - (player.getDy() - player.getY()) * ((delta * player.getSpeed()) /1000D));
-			tileMap.setyOffSet((tileMap.getyOffSet() - (player.getDy() - player.getY()) * ((delta * player.getSpeed()) /1000D)));
+			//player.setDy(player.getY() - 1);
+			player.setY(player.getY() - ((delta * player.getSpeed()) /1000D) / tileMap.getTileHeight());
+			tileMap.setyOffSet((tileMap.getyOffSet() + (delta * player.getSpeed()) /1000D));
 		}
 			
 		else if(down && player.getY() <= (tileMap.getTileRows() -1)){
 			player.setMoving(true);
 			player.setDirection((byte)1);
 			player.setAnimation((byte) 0);
+			//player.setDy(player.getY() + 1);
 			player.setY(player.getY() + ((delta * player.getSpeed()) /1000D) / tileMap.getTileHeight());
-			player.setDy(player.getY() + 1);
 			tileMap.setyOffSet((tileMap.getyOffSet() - (delta * player.getSpeed()) /1000D));
 		}
 			
@@ -157,8 +157,8 @@ public class Pokemon extends Game{
 			player.setMoving(true);
 			player.setDirection((byte)2);
 			player.setAnimation((byte) 3);
+			//player.setDx(player.getY() - 1);
 			player.setX(player.getX() - ((delta * player.getSpeed()) /1000D) / tileMap.getTileWidth());
-			player.setDx(player.getY() - 1);
 			tileMap.setxOffSet((tileMap.getxOffSet() + (delta * player.getSpeed()) /1000D));
 		}
 			
@@ -166,8 +166,8 @@ public class Pokemon extends Game{
 			player.setMoving(true);
 			player.setDirection((byte)3);
 			player.setAnimation((byte) 9);
+			//player.setDx(player.getY() + 1);
 			player.setX(player.getX() + ((delta * player.getSpeed()) /1000D) / tileMap.getTileWidth());
-			player.setDx(player.getY() + 1);
 			tileMap.setxOffSet((tileMap.getxOffSet() - (delta * player.getSpeed()) /1000D));
 		}
 		
