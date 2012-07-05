@@ -1,12 +1,9 @@
-package org.zengine.uils;
+package org.pokemon;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-
-import org.pokemon.PokemonMonster;
-import org.pokemon.PokemonName;
 
 /**
  * 
@@ -16,7 +13,7 @@ import org.pokemon.PokemonName;
  */
 public class PokemonLoader {
 	private static final PokemonLoader instance = new PokemonLoader();
-	private static ArrayList<PokemonMonster> pokemon;
+	private static ArrayList<PokemonEntity> pokemon;
 	private static String[] splitString;
 	private static BufferedReader input;
 	private static short lineNumber = 0;
@@ -47,7 +44,7 @@ public class PokemonLoader {
 	 */
 	public static void load(short[] pokemonId) {
 		
-		pokemon = new ArrayList<PokemonMonster>(pokemonId.length);
+		pokemon = new ArrayList<PokemonEntity>(pokemonId.length);
 		String line;
 					
 		for(int i = 0 ; i < pokemonId.length ; i++) {
@@ -146,7 +143,7 @@ public class PokemonLoader {
 				e.printStackTrace();
 			}
 			
-			pokemon.add(new PokemonMonster(id,name,type,hp,attack,defense,spAttack,spDefense,speed,statTotal,
+			pokemon.add(new PokemonEntity(id,name,type,hp,attack,defense,spAttack,spDefense,speed,statTotal,
 					chanceOfBeingMale,captureRate,exp,startingMoves,possibleMoves,moveLevels,evolvesInto,
 					evolveLevels));
 			lineNumber = 0;	
@@ -160,7 +157,7 @@ public class PokemonLoader {
 	 * 
 	 * @return
 	 */
-	public static ArrayList<PokemonMonster> getPokemon() {
+	public static ArrayList<PokemonEntity> getPokemon() {
 		return pokemon;
 	}
 	
@@ -171,7 +168,7 @@ public class PokemonLoader {
 	 * @param pokemonId
 	 * @return
 	 */
-	public static PokemonMonster getPokemon(short pokemonId) {
+	public static PokemonEntity getPokemon(short pokemonId) {
 
 		for(int i = 0 ; i < pokemon.size() ; i++)
 			if(pokemon.get(i).getId() == pokemonId)
@@ -188,7 +185,7 @@ public class PokemonLoader {
 	 * @param pokemonId
 	 * @return pokemon
 	 */
-	public static PokemonMonster getPokemon(PokemonName name) {
+	public static PokemonEntity getPokemon(PokemonName name) {
 		int pokemonId = name.getIndex();
 		
 		for(int i = 0 ; i < pokemon.size() ; i++) 
