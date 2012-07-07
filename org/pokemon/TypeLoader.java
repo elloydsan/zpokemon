@@ -11,7 +11,6 @@ import java.util.ArrayList;
  *
  */
 public class TypeLoader {
-	
 	private static final TypeLoader instance = new TypeLoader();
 
 	private static final byte NUMBER_OF_TYPES = 17;
@@ -49,10 +48,10 @@ public class TypeLoader {
 	}
 	
 	private static boolean contains(byte type, byte[] types) {
-		
 		for(int i = 0 ; i < types.length ; i++) 		
 			if(types[i] == type)
 				return true;
+		
 		return false;			
 	}
 	
@@ -73,7 +72,6 @@ public class TypeLoader {
 	 * @return
 	 */
 	public static Type getLoadedTypes(byte typeId) {
-		
 		for(int i = 0 ; i < loadedTypes.size() ; i++) {
 			
 			if(loadedTypes.get(i).getId() == typeId)

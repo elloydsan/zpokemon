@@ -33,8 +33,8 @@ public abstract class Entity implements Paintable{
 	public Entity(double x, double y, short width, short height, byte direction, byte animation) {	
 		this.x = x;
 		this.y = y;
-		this.dx = 0;
-		this.dy = 0;
+		this.dx = x;
+		this.dy = y;
 		this.width = width;
 		this.height = height;
 		this.direction = direction;	

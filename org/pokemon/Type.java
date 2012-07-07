@@ -7,7 +7,6 @@ package org.pokemon;
  *
  */
 public class Type {
-	
 	private byte id;
 	private String name;
 	
@@ -36,4 +35,5 @@ public class Type {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 }
