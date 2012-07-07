@@ -24,7 +24,7 @@ public class Pokemon extends Game{
 	private final long UPDATE_PERIOD = 1000L / UPDATE_RATE;
 	public static long beginTime, timeTaken, timeLeft, lastLoopTime, delta;
 	
-	private boolean left,right,up,down;
+	public static boolean left,right,up,down;
 
 	public static BufferedImage[] tileTextures;
 	public static BufferedImage[] playerImages;
@@ -98,7 +98,7 @@ public class Pokemon extends Game{
 		 * Update players movement.
 		 */
 		GameConstants.getPlayer().move(up, down, left, right, delta);
-		System.out.println(GameConstants.getPlayer().getX() + "," + GameConstants.getPlayer().getY());
+		//System.out.println(GameConstants.getPlayer().getX() + "," + GameConstants.getPlayer().getY());
 	}
 
 	@Override
@@ -121,6 +121,7 @@ public class Pokemon extends Game{
 					(int) (GameConstants.getPlayer().getY() - GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
 				up = true;
 				GameConstants.getPlayer().setDirection((byte)0);
+				GameConstants.getPlayer().setDy(GameConstants.getPlayer().getDy() - GameConstants.getTilemap().getTileHeight());
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;
@@ -130,6 +131,7 @@ public class Pokemon extends Game{
 					(int) (GameConstants.getPlayer().getY() + GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
 				down = true;
 				GameConstants.getPlayer().setDirection((byte)1);
+				GameConstants.getPlayer().setDy(GameConstants.getPlayer().getDy() + GameConstants.getTilemap().getTileHeight());
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;
@@ -139,6 +141,7 @@ public class Pokemon extends Game{
 					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
 				left = true;
 				GameConstants.getPlayer().setDirection((byte)2);
+				GameConstants.getPlayer().setDx(GameConstants.getPlayer().getDx() - GameConstants.getTilemap().getTileWidth());
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;
@@ -148,6 +151,7 @@ public class Pokemon extends Game{
 					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
 				right = true;
 				GameConstants.getPlayer().setDirection((byte)3);
+				GameConstants.getPlayer().setDx(GameConstants.getPlayer().getDx() + GameConstants.getTilemap().getTileWidth());
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;

@@ -17,6 +17,7 @@ public class PlayerEntity extends Entity {
 	private short drawX;
 	private short drawY;
 	private short speed;
+	private byte pixelJump;
 	private byte pcount;
 	private int coins;	
 	private boolean onBike;
@@ -33,11 +34,12 @@ public class PlayerEntity extends Entity {
 	 * @param delta
 	 * @param startcoins
 	 */
-	public PlayerEntity(short x, short y, short width, short height, byte delta, byte animation, short speed, int startCoins, BufferedImage[] images){
+	public PlayerEntity(double x, double y, short width, short height, byte delta, byte animation, short speed, int startCoins, BufferedImage[] images){
 		super(x,y,width,height,delta,animation);
 		this.drawX = (short) ((Constants.getWidth()/2) -30);
 		this.drawY = (short) ((Constants.getHeight()/2) -50);
 		this.speed = speed;
+		this.pixelJump = 1;
 		this.pcount = 0;
 		this.coins = startCoins;
 		this.images = images;
@@ -99,35 +101,35 @@ public class PlayerEntity extends Entity {
 		 * Move our player
 		 */
 		if(up && super.getY() >= 0 &&
-				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - (1 + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
+				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
 			
 			super.setAnimation((byte) 6);
-			super.setY(super.getY() - (1 + delta / speed));
-			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (1 + delta / speed));
+			super.setY(super.getY() - (pixelJump + delta / speed));
+			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (pixelJump + delta / speed));
 		}
 			
-		else if(down && super.getY() < (GameConstants.getTilemap().getTileRows() * GameConstants.getTilemap().getTileHeight()) - GameConstants.getTilemap().getTileHeight() &&
-				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + (1 + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
+		else if(down && super.getY() <= (GameConstants.getTilemap().getTileRows() * GameConstants.getTilemap().getTileHeight()) - GameConstants.getTilemap().getTileHeight() &&
+				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + (GameConstants.getTilemap().getTileHeight() + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
 			
 			super.setAnimation((byte) 0);
-			super.setY(super.getY() + (1 + delta / speed));
-			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (1 + delta / speed));
+			super.setY(super.getY() + (pixelJump + delta / speed));
+			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (pixelJump + delta / speed));
 		}
 			
 		else if(left && super.getX() >= 0 &&
-				GameConstants.isTileFree((int)((int)super.getX() - (1 + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+				GameConstants.isTileFree((int)((int)super.getX() - (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
 			
 			super.setAnimation((byte) 3);
-			super.setX(super.getX() - (1 + delta / speed));
-			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (1 + delta / speed));
+			super.setX(super.getX() - (pixelJump + delta / speed));
+			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (pixelJump + delta / speed));
 		}
 			
-		else if(right && super.getX() < (GameConstants.getTilemap().getTileCols() * GameConstants.getTilemap().getTileWidth()) - GameConstants.getTilemap().getTileWidth() &&
-				GameConstants.isTileFree((int)(super.getX() + (1 + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
-			
+		else if(right && super.getX() <= (GameConstants.getTilemap().getTileCols() * GameConstants.getTilemap().getTileWidth()) - GameConstants.getTilemap().getTileWidth() &&
+				GameConstants.isTileFree((int)(super.getX() + (GameConstants.getTilemap().getTileWidth() + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+
 			super.setAnimation((byte) 9);
-			super.setX(super.getX() + (1 + delta / speed));
-			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (1 + delta / speed));
+			super.setX(super.getX() + (pixelJump + delta / speed));
+			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (pixelJump + delta / speed));
 		}
 		
 		/**
@@ -136,65 +138,74 @@ public class PlayerEntity extends Entity {
 		if(!up && !down && !left && !right){
 			switch(super.getDirection()){
 			case 0:
+				//if(super.getY() != super.getDy()){
 				if(super.getY()%GameConstants.getTilemap().getTileHeight()!=0){
 					if(super.getY() >= 0 && 
-							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - (1 + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
+							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
 						super.setAnimation((byte) 6);
-						super.setY(super.getY() - (1 + delta / speed));
-						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (1 + delta / speed));
+						super.setY(super.getY() - (pixelJump + delta / speed));
+						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (pixelJump + delta / speed));
 					}else{
 						super.setAnimation((byte) 6);
-						super.setY(super.getY() + (1 + delta / speed));
-						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (1 + delta / speed));
+						super.setY(super.getY() + (pixelJump + delta / speed));
+						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (pixelJump + delta / speed));
 					}
+				}else{
+					this.moving = false;
 				}
 				break;
 			case 1:
+				//if(super.getY() != super.getDy()){
 				if(super.getY()%GameConstants.getTilemap().getTileHeight()!=0){
 					if(super.getY() <= (GameConstants.getTilemap().getTileRows() * GameConstants.getTilemap().getTileHeight()) - GameConstants.getTilemap().getTileHeight() &&
-							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + (1 + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
+							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
 						super.setAnimation((byte) 0);
-						super.setY(super.getY() + (1 + delta / speed));
-						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (1 + delta / speed));
+						super.setY(super.getY() + (pixelJump + delta / speed));
+						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (pixelJump + delta / speed));
 					}else{
 						super.setAnimation((byte) 0);
-						super.setY(super.getY() - (1 + delta / speed));
-						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (1 + delta / speed));
+						super.setY(super.getY() - (pixelJump + delta / speed));
+						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (pixelJump + delta / speed));
 					}
+				}else{
+					this.moving = false;
 				}
 				break;
 			case 2:
+				//if(super.getX() != super.getDx()){
 				if(super.getX()%GameConstants.getTilemap().getTileWidth()!=0){
 					if(super.getX() >= 0 &&
-							GameConstants.isTileFree((int)((int)super.getX() - (1 + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+							GameConstants.isTileFree((int)((int)super.getX() - (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
 						super.setAnimation((byte) 3);
-						super.setX(super.getX() - (1 + delta / speed));
-						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (1 + delta / speed));
+						super.setX(super.getX() - (pixelJump + delta / speed));
+						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (pixelJump + delta / speed));
 					}else{
 						super.setAnimation((byte) 3);
-						super.setX(super.getX() + (1 + delta / speed));
-						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (1 + delta / speed));
+						super.setX(super.getX() + (pixelJump + delta / speed));
+						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (pixelJump + delta / speed));
 					}
+				}else{
+					this.moving = false;
 				}
 				break;
 			case 3:
+				//if(super.getX() != super.getDx()){
 				if(super.getX()%GameConstants.getTilemap().getTileWidth()!=0){
 					if(super.getX() <= (GameConstants.getTilemap().getTileCols() * GameConstants.getTilemap().getTileWidth()) - GameConstants.getTilemap().getTileWidth() &&
-							GameConstants.isTileFree((int)(super.getX() + (1 + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+							GameConstants.isTileFree((int)(super.getX() + (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
 						super.setAnimation((byte) 9);
-						super.setX(super.getX() + (1 + delta / speed));
-						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (1 + delta / speed));
+						super.setX(super.getX() + (pixelJump + delta / speed));
+						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (pixelJump + delta / speed));
 					}else{
 						super.setAnimation((byte) 9);
-						super.setX(super.getX() - (1 + delta / speed));
-						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (1 + delta / speed));
+						super.setX(super.getX() - (pixelJump + delta / speed));
+						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (pixelJump + delta / speed));
 					}
+				}else{
+					this.moving = false;
 				}
 				break;
 			}
-			
-			//Release movement
-			this.moving = false;
 		}
 	}
 
