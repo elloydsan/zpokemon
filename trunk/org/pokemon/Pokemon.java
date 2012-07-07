@@ -25,16 +25,15 @@ public class Pokemon extends Game{
 	public static long beginTime, timeTaken, timeLeft, lastLoopTime, delta;
 	
 	private boolean left,right,up,down;
-	public static TileMap tileMap;
-	private PlayerEntity player;
+
 	public static BufferedImage[] tileTextures;
 	public static BufferedImage[] playerImages;
 	private Point xy = new Point(0,0);
 
 	@Override
 	public void draw(Graphics g) {	
-		tileMap.draw(g);
-		player.draw(g);
+		GameConstants.getTilemap().draw(g);
+		GameConstants.getPlayer().draw(g);
 		
 		g.setColor(Color.WHITE);
 		g.drawString("FPS: " + Constants.getRender().getFps(), 10, 20);
@@ -55,8 +54,8 @@ public class Pokemon extends Game{
 		 */
 		new GameFrame("Pokemon",this);
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
-		tileMap = new TileMap((short)20,(short)10,(short)20,(short)20,tileTextures);
-		player = new PlayerEntity((short)9, (short)3, (short)35, (short)35, (byte)0, (byte)0, (short)100, (short)0, playerImages);
+		GameConstants.setTilemap(new TileMap((short)20,(short)15,(short)20,(short)20,tileTextures));
+		GameConstants.setPlayer(new PlayerEntity((short)180, (short)60, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0, playerImages));
 		
 		/**
 		 * Start the game loop
@@ -98,156 +97,59 @@ public class Pokemon extends Game{
 		/**
 		 * Update players movement.
 		 */
-		
-		/**
-		 * Pixel based movement... sucks...
-		 */
-		/*if(player.isMoving() == true) {
-			player.setPcount((byte) (player.getPcount() + player.getSpeed()));
-			
-			if(up){
-				tileMap.setyOffSet((tileMap.getyOffSet() + player.getSpeed()));
-		    }
-			
-			else if(down) {
-				tileMap.setyOffSet((tileMap.getyOffSet() - player.getSpeed()));
-		    }
-			
-			else if(left) {
-				tileMap.setxOffSet((tileMap.getxOffSet() + player.getSpeed()));
-		    }
-			
-			else if(right) {
-				tileMap.setxOffSet((tileMap.getxOffSet() - player.getSpeed()));
-		    }
-	    }
-		
-	    if(player.getPcount() >= 20) {
-	    	player.setPcount((byte)0);
-			player.setMoving(false);
-			up = false;
-			down = false;
-			left = false;
-			right = false;
-	    }*/
-	    
-		
-		/**
-		 * Time based movement, also kind of sucks...
-		 */
-		if(up && player.getY() >= 0){
-			player.setMoving(true);
-			player.setDirection((byte)0);
-			player.setAnimation((byte) 6);
-			//player.setDy(player.getY() - 1);
-			player.setY(player.getY() - ((delta * player.getSpeed()) /1000D) / tileMap.getTileHeight());
-			tileMap.setyOffSet((tileMap.getyOffSet() + (delta * player.getSpeed()) /1000D));
-		}
-			
-		else if(down && player.getY() <= (tileMap.getTileRows() -1)){
-			player.setMoving(true);
-			player.setDirection((byte)1);
-			player.setAnimation((byte) 0);
-			//player.setDy(player.getY() + 1);
-			player.setY(player.getY() + ((delta * player.getSpeed()) /1000D) / tileMap.getTileHeight());
-			tileMap.setyOffSet((tileMap.getyOffSet() - (delta * player.getSpeed()) /1000D));
-		}
-			
-		else if(left && player.getX() >= 0){
-			player.setMoving(true);
-			player.setDirection((byte)2);
-			player.setAnimation((byte) 3);
-			//player.setDx(player.getY() - 1);
-			player.setX(player.getX() - ((delta * player.getSpeed()) /1000D) / tileMap.getTileWidth());
-			tileMap.setxOffSet((tileMap.getxOffSet() + (delta * player.getSpeed()) /1000D));
-		}
-			
-		else if(right && player.getX() <= (tileMap.getTileCols() -1)){
-			player.setMoving(true);
-			player.setDirection((byte)3);
-			player.setAnimation((byte) 9);
-			//player.setDx(player.getY() + 1);
-			player.setX(player.getX() + ((delta * player.getSpeed()) /1000D) / tileMap.getTileWidth());
-			tileMap.setxOffSet((tileMap.getxOffSet() - (delta * player.getSpeed()) /1000D));
-		}
-		
-		//Continue moving until destination is reached.
-		/*if(!up && !down && !left && !right && player.isMoving()){
-			switch(player.getDirection()){
-			case 0:
-				if(((int)player.getY() - (0.5)) != (int)player.getDy()){
-					player.setY(player.getY() - ((delta * player.getSpeed()) /1000D) / tileMap.getTileHeight());
-					tileMap.setyOffSet((tileMap.getyOffSet() + (delta * player.getSpeed()) /1000D));
-				}else{
-					player.setMoving(false);
-				}
-				break;
-			case 1:
-				if((int)player.getY() != (int)player.getDy()){
-					player.setY(player.getY() + ((delta * player.getSpeed()) /1000D) / tileMap.getTileHeight());
-					tileMap.setyOffSet((tileMap.getyOffSet() - (delta * player.getSpeed()) /1000D));
-				}else{
-					player.setMoving(false);
-				}
-				break;
-			case 2:
-				if((int)player.getX() != (int)player.getDx()){
-					player.setX(player.getX() - ((delta * player.getSpeed()) /1000D) / tileMap.getTileWidth());
-					tileMap.setxOffSet((tileMap.getxOffSet() + (delta * player.getSpeed()) /1000D));
-				}else{
-					player.setMoving(false);
-				}
-				break;
-			case 3:
-				if((int)player.getX() != (int)player.getDx()){
-					player.setX(player.getX() + ((delta * player.getSpeed()) /1000D) / tileMap.getTileWidth());
-					tileMap.setxOffSet((tileMap.getxOffSet() - (delta * player.getSpeed()) /1000D));
-				}else{
-					player.setMoving(false);
-				}
-				break;
-			}
-		}*/
+		GameConstants.getPlayer().move(up, down, left, right, delta);
+		System.out.println(GameConstants.getPlayer().getX() + "," + GameConstants.getPlayer().getY());
 	}
 
 	@Override
 	public void onEnd() {
 		System.out.println("Ending.");
 	}
-	
-	/**
-	 * Check if a tile is walkable.
-	 * 
-	 * @param x
-	 * @param y
-	 * @return boolean
-	 */
-	public boolean isTileFree(int x, int y){
-		System.out.println(x + "," + y);
-		return (tileMap.getLayer1()[x][y].getState() == 0);
-	}
 
 	/**
 	 * Key pressed
+	 * 
+	 * The only way to stop glitch's when moving is 
+	 * to only allow one key press at a time.
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch(e.getKeyCode()){
-		case KeyEvent.VK_W:
-			up = true;
-			player.setMoving(true);
+		case KeyEvent.VK_W: //UP
+			if(!GameConstants.getPlayer().isMoving() && !down && !left && !right)
+			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() / GameConstants.getTilemap().getTileWidth()), 
+					(int) (GameConstants.getPlayer().getY() - GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
+				up = true;
+				GameConstants.getPlayer().setDirection((byte)0);
+				GameConstants.getPlayer().setMoving(true);
+			}
 			break;
-		case KeyEvent.VK_S:
-			down = true;
-			player.setMoving(true);
+		case KeyEvent.VK_S: //DOWN
+			if(!GameConstants.getPlayer().isMoving() && !up && !left && !right)
+			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() / GameConstants.getTilemap().getTileWidth()), 
+					(int) (GameConstants.getPlayer().getY() + GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
+				down = true;
+				GameConstants.getPlayer().setDirection((byte)1);
+				GameConstants.getPlayer().setMoving(true);
+			}
 			break;
-		case KeyEvent.VK_A:
-			left = true;
-			player.setMoving(true);
+		case KeyEvent.VK_A: //LEFT
+			if(!GameConstants.getPlayer().isMoving() && !up && !down && !right)
+			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() - GameConstants.getTilemap().getTileWidth()) / GameConstants.getTilemap().getTileWidth(), 
+					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
+				left = true;
+				GameConstants.getPlayer().setDirection((byte)2);
+				GameConstants.getPlayer().setMoving(true);
+			}
 			break;
-		case KeyEvent.VK_D:
-			right = true;
-			player.setMoving(true);
+		case KeyEvent.VK_D: //RIGHT
+			if(!GameConstants.getPlayer().isMoving() && !up && !down && !left)
+			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() + GameConstants.getTilemap().getTileWidth()) / GameConstants.getTilemap().getTileWidth(), 
+					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
+				right = true;
+				GameConstants.getPlayer().setDirection((byte)3);
+				GameConstants.getPlayer().setMoving(true);
+			}
 			break;
 		}
 	}

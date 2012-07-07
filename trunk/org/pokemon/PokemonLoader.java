@@ -50,8 +50,8 @@ public class PokemonLoader {
 		for(int i = 0 ; i < pokemonId.length ; i++) {
 			
 			short currentPokemon = pokemonId[i];
-			input = new BufferedReader(new InputStreamReader(instance.getClass().getClassLoader().getResourceAsStream("resources/data/pokemon/" + currentPokemon + ".pokemon")));
-			
+			input = new BufferedReader(new InputStreamReader(instance.getClass().getClassLoader().getResourceAsStream("resources\\data\\pokemon\\" + currentPokemon + ".pokemon")));
+
 			try {
 				while((line = input.readLine()) != null) {				
 					switch(lineNumber) {
