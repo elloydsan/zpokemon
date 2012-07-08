@@ -11,6 +11,8 @@ import java.net.UnknownHostException;
  * 
  * @author Troy
  * 
+ * NOTE: We will not use this unless we have to.
+ * 
  * This Packet Manager uses the DatagramSocket to
  * send and receive packets over UDP.
  * 
@@ -18,7 +20,7 @@ import java.net.UnknownHostException;
  * http://docs.oracle.com/javase/1.4.2/docs/api/java/net/DatagramSocket.html
  *
  */
-public class PacketManager {
+public class PacketManagerUDP {
 	private Thread receiveThread;
 	private DatagramSocket socket;
 	
@@ -34,7 +36,7 @@ public class PacketManager {
 	 * 
 	 * @param ipAddress
 	 */
-	public PacketManager(String ipAddress, int port){
+	public PacketManagerUDP(String ipAddress, int port){
 		this.port = port;
 		
 		try {
