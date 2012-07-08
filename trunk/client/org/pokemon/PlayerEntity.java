@@ -11,6 +11,11 @@ import org.zengine.Constants;
  * @author Fsig, NerdyGnome
  * 
  * The player class, all player details to be stored
+ * 
+ * I can't really think of a better way to animate our
+ * player while he moves.
+ * 
+ * So if you have any ideas please let me know.
  *
  */
 public class PlayerEntity extends Entity {
@@ -18,6 +23,8 @@ public class PlayerEntity extends Entity {
 	private short drawY;
 	private short speed;
 	private byte pixelJump;
+	private byte tickCount;
+	private boolean changeAnimation;
 	private int coins;	
 	private boolean onBike;
 	private boolean moving;
@@ -37,7 +44,8 @@ public class PlayerEntity extends Entity {
 		this.drawX = (short) ((Constants.getWidth()/2) -30);
 		this.drawY = (short) ((Constants.getHeight()/2) -50);
 		this.speed = speed;
-		this.pixelJump = 1;
+		this.pixelJump = 4;
+		this.tickCount = 1;
 		this.coins = startCoins;
 	}
 
@@ -77,48 +85,91 @@ public class PlayerEntity extends Entity {
 	 * Move the player if needed.
 	 */
 	public void move(boolean up, boolean down, boolean left, boolean right, long delta){
+		if(tickCount > 30)
+			tickCount = 1;
+		
+		if(tickCount%5==0)
+			changeAnimation = true;
+		
 		/**
 		 * Move our player
 		 */
 		if(up && super.getY() >= 0 &&
-				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
+				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - pixelJump) / GameConstants.getTilemap().getTileHeight())){
 			
-			super.setAnimation((byte) 6);
-			super.setY(super.getY() - (pixelJump + delta / speed));
-			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (pixelJump + delta / speed));
+			//super.setAnimation((byte) 6);
+			super.setY(super.getY() - pixelJump);
+			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + pixelJump);
+			
+			if(changeAnimation){
+				if(super.getAnimation() == 6)
+					super.setAnimation((byte) 7);
+				else if(super.getAnimation() == 7)
+					super.setAnimation((byte) 8);
+				else if(super.getAnimation() == 8)
+					super.setAnimation((byte) 7);
+				
+				changeAnimation = false;
+			}
 			
 			if(GameConstants.isMultiplayer())
 				GameConstants.getPacketManager().movePlayer();
 		}
 			
 		else if(down && super.getY() <= (GameConstants.getTilemap().getTileRows() * GameConstants.getTilemap().getTileHeight()) - GameConstants.getTilemap().getTileHeight() &&
-				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + (GameConstants.getTilemap().getTileHeight() + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
+				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
+
+			super.setY(super.getY() + pixelJump);
+			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - pixelJump);
 			
-			super.setAnimation((byte) 0);
-			super.setY(super.getY() + (pixelJump + delta / speed));
-			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (pixelJump + delta / speed));
+			if(changeAnimation){
+				if(super.getAnimation() == 0)
+					super.setAnimation((byte) 1);
+				else if(super.getAnimation() == 1)
+					super.setAnimation((byte) 2);
+				else if(super.getAnimation() == 2)
+					super.setAnimation((byte) 0);
+				
+				changeAnimation = false;
+			}
 			
 			if(GameConstants.isMultiplayer())
 				GameConstants.getPacketManager().movePlayer();
 		}
 			
 		else if(left && super.getX() >= 0 &&
-				GameConstants.isTileFree((int)((int)super.getX() - (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+				GameConstants.isTileFree((int)((int)super.getX() - pixelJump) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+
+			super.setX(super.getX() - pixelJump);
+			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + pixelJump);
 			
-			super.setAnimation((byte) 3);
-			super.setX(super.getX() - (pixelJump + delta / speed));
-			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (pixelJump + delta / speed));
+			if(changeAnimation){
+				if(super.getAnimation() == 3)
+					super.setAnimation((byte) 4);
+				else if(super.getAnimation() == 4)
+					super.setAnimation((byte) 3);
+				
+				changeAnimation = false;
+			}
 			
 			if(GameConstants.isMultiplayer())
 				GameConstants.getPacketManager().movePlayer();
 		}
 			
 		else if(right && super.getX() <= (GameConstants.getTilemap().getTileCols() * GameConstants.getTilemap().getTileWidth()) - GameConstants.getTilemap().getTileWidth() &&
-				GameConstants.isTileFree((int)(super.getX() + (GameConstants.getTilemap().getTileWidth() + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+				GameConstants.isTileFree((int)(super.getX() + GameConstants.getTilemap().getTileWidth()) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
 
-			super.setAnimation((byte) 9);
-			super.setX(super.getX() + (pixelJump + delta / speed));
-			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (pixelJump + delta / speed));
+			super.setX(super.getX() + pixelJump);
+			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - pixelJump);
+			
+			if(changeAnimation){
+				if(super.getAnimation() == 9)
+					super.setAnimation((byte) 10);
+				else if(super.getAnimation() == 10)
+					super.setAnimation((byte) 9);
+				
+				changeAnimation = false;
+			}
 			
 			if(GameConstants.isMultiplayer())
 				GameConstants.getPacketManager().movePlayer();
@@ -133,84 +184,174 @@ public class PlayerEntity extends Entity {
 				//if(super.getY() != super.getDy()){
 				if(super.getY()%GameConstants.getTilemap().getTileHeight()!=0){
 					if(super.getY() >= 0 && 
-							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
-						super.setAnimation((byte) 6);
-						super.setY(super.getY() - (pixelJump + delta / speed));
-						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (pixelJump + delta / speed));
+							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - pixelJump) / GameConstants.getTilemap().getTileHeight())){
+						super.setY(super.getY() - pixelJump);
+						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + pixelJump);
+						
+						if(changeAnimation){
+							if(super.getAnimation() == 6)
+								super.setAnimation((byte) 7);
+							else if(super.getAnimation() == 7)
+								super.setAnimation((byte) 8);
+							else if(super.getAnimation() == 8)
+								super.setAnimation((byte) 7);
+							
+							changeAnimation = false;
+						}
 					}else{
-						super.setAnimation((byte) 6);
-						super.setY(super.getY() + (pixelJump + delta / speed));
-						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (pixelJump + delta / speed));
+						super.setY(super.getY() + pixelJump);
+						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - pixelJump);
+						
+						if(changeAnimation){
+							if(super.getAnimation() == 6)
+								super.setAnimation((byte) 7);
+							else if(super.getAnimation() == 7)
+								super.setAnimation((byte) 8);
+							else if(super.getAnimation() == 8)
+								super.setAnimation((byte) 7);
+							
+							changeAnimation = false;
+						}
 					}
 					
 					if(GameConstants.isMultiplayer())
 						GameConstants.getPacketManager().movePlayer();
-				}else{
+				}else if(moving){
+					super.setAnimation((byte) 6);
 					this.moving = false;
+					
+					if(GameConstants.isMultiplayer())
+						GameConstants.getPacketManager().movePlayer();
 				}
 				break;
 			case 1:
 				//if(super.getY() != super.getDy()){
 				if(super.getY()%GameConstants.getTilemap().getTileHeight()!=0){
 					if(super.getY() <= (GameConstants.getTilemap().getTileRows() * GameConstants.getTilemap().getTileHeight()) - GameConstants.getTilemap().getTileHeight() &&
-							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + (GameConstants.getTilemap().getTileHeight() + delta / speed)) / GameConstants.getTilemap().getTileHeight())){
-						super.setAnimation((byte) 0);
-						super.setY(super.getY() + (pixelJump + delta / speed));
-						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - (pixelJump + delta / speed));
+							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + pixelJump) / GameConstants.getTilemap().getTileHeight())){
+						super.setY(super.getY() + pixelJump);
+						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() - pixelJump);
+						
+						if(changeAnimation){
+							if(super.getAnimation() == 0)
+								super.setAnimation((byte) 1);
+							else if(super.getAnimation() == 1)
+								super.setAnimation((byte) 2);
+							else if(super.getAnimation() == 2)
+								super.setAnimation((byte) 0);
+							
+							changeAnimation = false;
+						}
 					}else{
-						super.setAnimation((byte) 0);
-						super.setY(super.getY() - (pixelJump + delta / speed));
-						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + (pixelJump + delta / speed));
+						super.setY(super.getY() - pixelJump);
+						GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + pixelJump);
+						
+						if(changeAnimation){
+							if(super.getAnimation() == 0)
+								super.setAnimation((byte) 1);
+							else if(super.getAnimation() == 1)
+								super.setAnimation((byte) 2);
+							else if(super.getAnimation() == 2)
+								super.setAnimation((byte) 0);
+							
+							changeAnimation = false;
+						}
 					}
 					
 					if(GameConstants.isMultiplayer())
 						GameConstants.getPacketManager().movePlayer();
-				}else{
+				}else if(moving){
+					super.setAnimation((byte) 0);
 					this.moving = false;
+					
+					if(GameConstants.isMultiplayer())
+						GameConstants.getPacketManager().movePlayer();
 				}
 				break;
 			case 2:
 				//if(super.getX() != super.getDx()){
 				if(super.getX()%GameConstants.getTilemap().getTileWidth()!=0){
 					if(super.getX() >= 0 &&
-							GameConstants.isTileFree((int)((int)super.getX() - (pixelJump + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
-						super.setAnimation((byte) 3);
-						super.setX(super.getX() - (pixelJump + delta / speed));
-						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (pixelJump + delta / speed));
+							GameConstants.isTileFree((int)((int)super.getX() - pixelJump) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+						super.setX(super.getX() - pixelJump);
+						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + pixelJump);
+						
+						if(changeAnimation){
+							if(super.getAnimation() == 3)
+								super.setAnimation((byte) 4);
+							else if(super.getAnimation() == 4)
+								super.setAnimation((byte) 3);
+							
+							changeAnimation = false;
+						}
 					}else{
-						super.setAnimation((byte) 3);
-						super.setX(super.getX() + (pixelJump + delta / speed));
-						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (pixelJump + delta / speed));
+						super.setX(super.getX() + pixelJump);
+						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - pixelJump);
+						
+						if(changeAnimation){
+							if(super.getAnimation() == 3)
+								super.setAnimation((byte) 4);
+							else if(super.getAnimation() == 4)
+								super.setAnimation((byte) 3);
+							
+							changeAnimation = false;
+						}
 					}
 					
 					if(GameConstants.isMultiplayer())
 						GameConstants.getPacketManager().movePlayer();
-				}else{
+				}else if(moving){
+					super.setAnimation((byte) 3);
 					this.moving = false;
+					
+					if(GameConstants.isMultiplayer())
+						GameConstants.getPacketManager().movePlayer();
 				}
 				break;
 			case 3:
 				//if(super.getX() != super.getDx()){
 				if(super.getX()%GameConstants.getTilemap().getTileWidth()!=0){
 					if(super.getX() <= (GameConstants.getTilemap().getTileCols() * GameConstants.getTilemap().getTileWidth()) - GameConstants.getTilemap().getTileWidth() &&
-							GameConstants.isTileFree((int)(super.getX() + (GameConstants.getTilemap().getTileWidth() + delta / speed)) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
-						super.setAnimation((byte) 9);
-						super.setX(super.getX() + (pixelJump + delta / speed));
-						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - (pixelJump + delta / speed));
+							GameConstants.isTileFree((int)(super.getX() + pixelJump) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
+						super.setX(super.getX() + pixelJump);
+						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() - pixelJump);
+						
+						if(changeAnimation){
+							if(super.getAnimation() == 9)
+								super.setAnimation((byte) 10);
+							else if(super.getAnimation() == 10)
+								super.setAnimation((byte) 9);
+							
+							changeAnimation = false;
+						}
 					}else{
-						super.setAnimation((byte) 9);
-						super.setX(super.getX() - (pixelJump + delta / speed));
-						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + (pixelJump + delta / speed));
+						super.setX(super.getX() - pixelJump);
+						GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + pixelJump);
+						
+						if(changeAnimation){
+							if(super.getAnimation() == 9)
+								super.setAnimation((byte) 10);
+							else if(super.getAnimation() == 10)
+								super.setAnimation((byte) 9);
+							
+							changeAnimation = false;
+						}
 					}
 					
 					if(GameConstants.isMultiplayer())
 						GameConstants.getPacketManager().movePlayer();
-				}else{
+				}else if(moving){
+					super.setAnimation((byte) 9);
 					this.moving = false;
+					
+					if(GameConstants.isMultiplayer())
+						GameConstants.getPacketManager().movePlayer();
 				}
 				break;
 			}
 		}
+		
+		tickCount++;
 	}
 
 	@Override

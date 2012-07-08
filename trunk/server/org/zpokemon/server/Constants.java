@@ -18,6 +18,18 @@ public class Constants {
 	public static void setClients(ArrayList<PokemonThread> clients) {
 		Constants.clients = clients;
 	}
+	
+	/**
+	 * Remove a client and stop the thread running.
+	 * 
+	 * @param client
+	 */
+	public static void removeClient(PokemonThread client){
+		while(!client.isInterrupted())
+			client.interrupt();
+		
+		clients.remove(client);
+	}
 
 	/**
 	 * Get a player by it's ID.
