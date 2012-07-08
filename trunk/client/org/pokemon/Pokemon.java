@@ -12,6 +12,7 @@ import org.zengine.Constants;
 import org.zengine.Game;
 import org.zengine.GameFrame;
 import org.zengine.TileMap;
+import org.zengine.networking.PacketManager;
 import org.zengine.uils.Image;
 
 /**
@@ -27,13 +28,18 @@ public class Pokemon extends Game{
 	public static boolean left,right,up,down;
 
 	public static BufferedImage[] tileTextures;
-	public static BufferedImage[] playerImages;
 	private Point xy = new Point(0,0);
 
 	@Override
 	public void draw(Graphics g) {	
 		GameConstants.getTilemap().draw(g);
 		GameConstants.getPlayer().draw(g);
+		
+		//Multiplayer
+		if(GameConstants.getPlayerList() != null)
+		for(OtherPlayerEntity p : GameConstants.getPlayerList()){
+			p.draw(g);
+		}
 		
 		g.setColor(Color.WHITE);
 		g.drawString("FPS: " + Constants.getRender().getFps(), 10, 20);
@@ -44,7 +50,7 @@ public class Pokemon extends Game{
 	public void onStart() {
 		System.out.println("Loading Pokemon.");
 		tileTextures = Image.splitImage(Image.makeColorTransparent("resources/sprites/textures/pokemonTextures.gif", new Color(255,0,255)), 15, 15);
-		playerImages = Image.splitImage(Image.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4);
+		GameConstants.setPlayerImages(Image.splitImage(Image.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
 	}
 
 	@Override
@@ -55,12 +61,14 @@ public class Pokemon extends Game{
 		new GameFrame("Pokemon",this);
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
 		GameConstants.setTilemap(new TileMap((short)20,(short)15,(short)20,(short)20,tileTextures));
-		GameConstants.setPlayer(new PlayerEntity((short)180, (short)60, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0, playerImages));
+		GameConstants.setPlayer(new PlayerEntity((short)180, (short)60, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0));
 		
 		/**
 		 * Start the game loop
 		 */
 		System.out.println("Starting game.");
+		if(GameConstants.isMultiplayer())
+			GameConstants.setPacketManager(new PacketManager("127.0.0.1",5632));
 		gameLoop();
 	}
 	
@@ -98,7 +106,6 @@ public class Pokemon extends Game{
 		 * Update players movement.
 		 */
 		GameConstants.getPlayer().move(up, down, left, right, delta);
-		//System.out.println(GameConstants.getPlayer().getX() + "," + GameConstants.getPlayer().getY());
 	}
 
 	@Override
