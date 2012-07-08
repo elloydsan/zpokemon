@@ -118,11 +118,11 @@ public class PacketManager {
 			         * 
 			         * Server->Client
 			         */
-			        switch(header[0]){
-			        case "0": //Login
+			        switch(Integer.parseInt(header[0])){
+			        case 0: //Login
 				        GameConstants.getPlayer().setId(Short.parseShort(header[1]));
 			        	break;
-			        case "1": //Get player list
+			        case 1: //Get player list
 			        	replyPacket = header[1].split(":");
 			        			
 			        	if(Short.parseShort(replyPacket[0]) != GameConstants.getPlayer().getId()){
@@ -148,9 +148,9 @@ public class PacketManager {
 			        		}
 			        	}
 			        	break;
-			        case "2": //Move player
+			        case 2: //Move player
 			        	break;
-			        case "3": //Disconnect player
+			        case 3: //Disconnect player
 			        	GameConstants.getPlayerList().remove(GameConstants.getPlayer(Short.parseShort(header[1])));
 			        default:
 			        	break;

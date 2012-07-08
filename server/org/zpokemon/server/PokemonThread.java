@@ -16,7 +16,7 @@ public class PokemonThread extends Thread {
     private BufferedReader in;
     private PrintWriter out;
     
-    private int clientID;
+    public int clientID;
     private String[] header;
     private String[] packet;
 
@@ -65,25 +65,26 @@ public class PokemonThread extends Thread {
                  * packet so the client know's how to process
                  * the response.
                  */
-                switch(header[0]){
-                case "0": //Login
+                switch(Integer.parseInt(header[0])){
+                case 0: //Login
                 	Constants.getPlayerList().add(new PlayerEntity((short)clientID, Double.parseDouble(packet[0]), Double.parseDouble(packet[1]),(byte)0,(byte)0));
-                	sendPacket("0~" + clientID);
+                	sendPacket(PacketHeaders.LOGIN.getHeader() + clientID);
                 	
                     /**
                      * Notify all client's and new user has joined.
                      */
                     Broadcaster.broadcast(Packets.playerUpdate((short)clientID));
                 	break;
-                case "1": //Get Player list
+                case 1: //Get Player list
                 	for(PlayerEntity p : Constants.getPlayerList())
-            			sendPacket("1~" + p.getId() + ":" + p.getX() + ":" + p.getY() + ":" + p.getAnimation());
+            			sendPacket(Packets.playerUpdate(p.getId()));
                 	break;
-                case "2": //Player moves
+                case 2: //Player moves
                 	Constants.getPlayer(Short.parseShort(packet[0])).setX(Double.parseDouble(packet[1]));
                 	Constants.getPlayer(Short.parseShort(packet[0])).setY(Double.parseDouble(packet[2]));
                 	Constants.getPlayer(Short.parseShort(packet[0])).setAnimation(Byte.parseByte(packet[3]));
-                	sendPacket("2~0"); //Return TOK.
+                	
+                	sendPacket(PacketHeaders.PLAYER_MOVE.getHeader() + "0"); //Return TOK.
                 	
                     /**
                      * Notify all client's this player has moved.
@@ -96,8 +97,14 @@ public class PokemonThread extends Thread {
                 //log("Client packet-header: " + input[0]);
             }
         }catch(IOException e){
-            log("DC client #: " + clientID);
-            
+            log("DC client #: " + clientID + " | The user most likley closed the window.");
+        }finally{
+            try {
+                socket.close();
+            } catch (IOException e){
+                log("Couldn't close a socket, what's going on?");
+            }
+
             /**
              * Tell client's to remove player.
              */
@@ -107,14 +114,12 @@ public class PokemonThread extends Thread {
              * Remove player.
              */
             Constants.getPlayerList().remove(Constants.getPlayer((short)clientID));
-        }finally{
-            try {
-                socket.close();
-            } catch (IOException e){
-                log("Couldn't close a socket, what's going on?");
-            }
-
             log("Connection with client # " + clientID + " closed.");
+            
+            /**
+             * Finally, kill of this thread and remove it.
+             */
+            Constants.removeClient(this);
         }
     }
     

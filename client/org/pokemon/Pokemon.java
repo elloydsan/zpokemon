@@ -123,40 +123,44 @@ public class Pokemon extends Game{
 	public void keyPressed(KeyEvent e) {
 		switch(e.getKeyCode()){
 		case KeyEvent.VK_W: //UP
-			if(!GameConstants.getPlayer().isMoving() && !down && !left && !right)
+			if(!GameConstants.getPlayer().isMoving()/* && !down && !left && !right*/)
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() / GameConstants.getTilemap().getTileWidth()), 
 					(int) (GameConstants.getPlayer().getY() - GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
 				up = true;
+				GameConstants.getPlayer().setAnimation((byte) 6);
 				GameConstants.getPlayer().setDirection((byte)0);
 				GameConstants.getPlayer().setDy(GameConstants.getPlayer().getDy() - GameConstants.getTilemap().getTileHeight());
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;
 		case KeyEvent.VK_S: //DOWN
-			if(!GameConstants.getPlayer().isMoving() && !up && !left && !right)
+			if(!GameConstants.getPlayer().isMoving()/* && !up && !left && !right*/)
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() / GameConstants.getTilemap().getTileWidth()), 
 					(int) (GameConstants.getPlayer().getY() + GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
 				down = true;
+				GameConstants.getPlayer().setAnimation((byte) 0);
 				GameConstants.getPlayer().setDirection((byte)1);
 				GameConstants.getPlayer().setDy(GameConstants.getPlayer().getDy() + GameConstants.getTilemap().getTileHeight());
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;
 		case KeyEvent.VK_A: //LEFT
-			if(!GameConstants.getPlayer().isMoving() && !up && !down && !right)
+			if(!GameConstants.getPlayer().isMoving()/* && !up && !down && !right*/)
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() - GameConstants.getTilemap().getTileWidth()) / GameConstants.getTilemap().getTileWidth(), 
 					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
 				left = true;
+				GameConstants.getPlayer().setAnimation((byte) 3);
 				GameConstants.getPlayer().setDirection((byte)2);
 				GameConstants.getPlayer().setDx(GameConstants.getPlayer().getDx() - GameConstants.getTilemap().getTileWidth());
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;
 		case KeyEvent.VK_D: //RIGHT
-			if(!GameConstants.getPlayer().isMoving() && !up && !down && !left)
+			if(!GameConstants.getPlayer().isMoving()/* && !up && !down && !left*/)
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() + GameConstants.getTilemap().getTileWidth()) / GameConstants.getTilemap().getTileWidth(), 
 					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
 				right = true;
+				GameConstants.getPlayer().setAnimation((byte) 9);
 				GameConstants.getPlayer().setDirection((byte)3);
 				GameConstants.getPlayer().setDx(GameConstants.getPlayer().getDx() + GameConstants.getTilemap().getTileWidth());
 				GameConstants.getPlayer().setMoving(true);
