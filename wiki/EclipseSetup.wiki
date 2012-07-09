@@ -1,12 +1,7 @@
 #summary ZPokemon setup in Eclipse.
 #labels Featured,Phase-Implementation
 
-= Introduction =
-
 This is a simple tutorial on how to get started with the ZPokemon client and server.
-
-
-= Details =
 
 ==Step 1 - SVN Checkout:==
 First you must checkout the SVN onto your computer. You must have a SVN client installed on your computer for this to work. You can download TortoiseSVN from here: http://tortoisesvn.net/
