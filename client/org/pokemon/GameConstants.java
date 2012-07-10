@@ -15,6 +15,9 @@ public class GameConstants {
 	private static PlayerEntity player;
 	private static BufferedImage[] playerImages;
 	
+	// Chat
+	private static Chatbox chat;
+	
 	//Networking
 	private static boolean multiplayer = true;
 	private static PacketManager packetManager;
@@ -42,6 +45,14 @@ public class GameConstants {
 
 	public static void setPlayerImages(BufferedImage[] playerImages) {
 		GameConstants.playerImages = playerImages;
+	}
+	
+	public static Chatbox getChat() {
+		return chat;
+	}
+	
+	public static void setChat(Chatbox chat) {
+		GameConstants.chat = chat;
 	}
 
 	/**

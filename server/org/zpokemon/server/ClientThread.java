@@ -116,6 +116,12 @@ public class ClientThread extends Thread {
 	                	sendPacket(Packets.mapChunkLayer2());
 	                	sendPacket(Packets.mapChunkLayer3());
 	                	break;
+	                case 6: // Chatbox
+	                	//Once again, header id : msg
+	                	Broadcaster.broadcast(PacketHeaders.PLAYER_SEND_MESSAGE.getHeader() + 
+	                			packet[0] + ":" + 
+	                			packet[1]);
+	                	break;
 	                default: //Default should NEVER be reached.
 	                	//Best to assume this player is cheating and DC them I guess?
 	                	break;
