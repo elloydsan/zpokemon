@@ -14,7 +14,8 @@ public enum PacketHeaders {
 	PLAYER_MOVE("2~"),
 	PLAYER_DISCONNECT("3~"),
 	MAP_CREATE("4~"),
-	MAP_CHUNK("5~");
+	MAP_CHUNK("5~"),
+	PLAYER_SEND_MESSAGE("6~");
 	
 	private final String header;
 	

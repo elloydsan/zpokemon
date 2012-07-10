@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import org.zengine.Constants;
 import org.zengine.Game;
 import org.zengine.GameFrame;
+import org.zengine.networking.PacketHeaders;
 import org.zengine.networking.PacketManager;
 import org.zengine.uils.Image;
 
@@ -47,6 +48,10 @@ public class Pokemon extends Game{
 		case PLAYING:
 			GameConstants.getTilemap().draw(g);
 			GameConstants.getPlayer().draw(g);
+			
+			//Chatmenu
+			if(GameConstants.getChat().isChatMenuOpen()) 
+				GameConstants.getChat().draw(g);
 			
 			//Multiplayer
 			if(GameConstants.getPlayerList() != null)
@@ -91,6 +96,7 @@ public class Pokemon extends Game{
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
 		GameConstants.setPlayer(new PlayerEntity((short)280, (short)160, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0));
 		//GameConstants.setTilemap(new TileMap((short)20,(short)15,(short)20,(short)20,tileTextures));
+		GameConstants.setChat(new Chatbox());
 		
 		/**
 		 * Start the game loop
@@ -224,8 +230,59 @@ public class Pokemon extends Game{
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;
+		case KeyEvent.VK_CAPS_LOCK: // CHATMENU
+			
+			// Opening or closing the menu
+			if(GameConstants.getChat().isChatMenuOpen()) { 
+				System.out.println("Closing chatmenu...");
+				GameConstants.getChat().setChatMenuOpen(false);			
+				GameConstants.getChat().setChatString("");
+			}
+			else {
+				GameConstants.getChat().setChatMenuOpen(true);
+				System.out.println("Opening chatmenu...");					
+			}
+			break;
+		} // End of switch statement
+		
+		/*
+		 * Checks input for chatmenu
+		 */
+		if(GameConstants.getChat().isChatMenuOpen()) {
+			
+			// We don't want to write stuff for these buttons
+			if(e.getKeyCode() != KeyEvent.VK_ENTER && e.getKeyCode() != KeyEvent.VK_CAPS_LOCK &&
+					e.getKeyCode() != KeyEvent.VK_SHIFT
+					&& GameConstants.getChat().getCurNrOfCharacters() < GameConstants.getChat().getMaximumCharacters()) {	
+				GameConstants.getChat().setChatString(GameConstants.getChat().getChatString() + e.getKeyChar());	
+				GameConstants.getChat().setCurNrOfCharacters((byte) ((GameConstants.getChat().getCurNrOfCharacters()) + 1));
+				
+			}
+			
+			//Kolla efter backspace här, då vill vi ta bort en siffra
+			
+			// This should send the whole string/log to the server
+			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				
+				GameConstants.getChat().setChatlog(GameConstants.getChat().getChatlog() + 
+						GameConstants.getPlayer().getId() + " - " +GameConstants.getChat().getChatString() + "~");
+				
+				//Check for multiplayer here
+				//This will send a packet to the server. Header ID : msg
+				GameConstants.getPacketManager().sendPacket(PacketHeaders.PLAYER_SEND_MESSAGE.getHeader() +
+						GameConstants.getPlayer().getId() + ":" +
+						GameConstants.getChat().getChatString());
+				
+				System.out.println("------------CHATLOG----------\n" + GameConstants.getChat().getChatlog() + "----\n");
+							
+				//After we've sent our message, we want to clear it
+				GameConstants.getChat().setChatString("");
+				GameConstants.getChat().setCurNrOfCharacters((byte) 0);
+			}
+						
 		}
-	}
+		}
+	
 
 	/**
 	 * Key released
