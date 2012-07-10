@@ -1,4 +1,4 @@
-package org.zengine;
+package org.pokemon;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import org.zengine.Constants;
 import org.zengine.graphics.Paintable;
 
 /**
@@ -13,7 +14,7 @@ import org.zengine.graphics.Paintable;
  * @author Troy
  * 
  * The TileMap class currently supports 3 layers.
- * These layers are generaly as follows:
+ * These layers are generally as follows:
  * 1: Background / base tiles.
  * 2: Overlay tiles to blend tiles together.
  * 3: Objects.
@@ -68,9 +69,9 @@ public class TileMap implements Paintable{
 		
 		for(short a = 0; a < tileRows; a++){
 			for(short b = 0; b < tileCols; b++){
-				layer1[b][a] = new Tile((byte)0, (byte)0, 0);	
-				layer2[b][a] = new Tile((byte)0, (byte)0, 0);
-				layer3[b][a] = new Tile((byte)0, (byte)0, 0);
+				layer1[b][a] = new Tile((byte)0, (byte)0, (short)0);	
+				layer2[b][a] = new Tile((byte)0, (byte)0, (short)0);
+				layer3[b][a] = new Tile((byte)0, (byte)0, (short)0);
 			}
 		}
 		
@@ -83,7 +84,7 @@ public class TileMap implements Paintable{
 		System.out.println("Viewport: " + viewport.getX() + "," + viewport.getY() + "," + viewport.getWidth() + "," + viewport.getHeight());
 		
 		//Set some water in the top left hand corner.
-		layer1[0][0].setImage(134);
+		/*layer1[0][0].setImage(134);
 		layer1[1][0].setImage(134);
 		layer1[2][0].setImage(134);
 		layer1[3][0].setImage(134);
@@ -100,6 +101,9 @@ public class TileMap implements Paintable{
 		layer2[0][1].setImage(2);
 		layer3[1][1].setImage(4);
 		
+		layer2[0][1].setState((byte) 1);
+		layer3[1][1].setState((byte) 1);
+		
 		//And add in some fences at the corners of the map.
 		layer1[tileCols-1][0].setImage(3);
 		layer1[0][tileRows-1].setImage(4);
@@ -107,7 +111,7 @@ public class TileMap implements Paintable{
 		
 		layer1[tileCols-1][0].setState((byte) 1);
 		layer1[0][tileRows-1].setState((byte) 1);
-		layer1[tileCols-1][tileRows-1].setState((byte) 1);
+		layer1[tileCols-1][tileRows-1].setState((byte) 1);*/
 	}
 
 	public double getxOffSet() {

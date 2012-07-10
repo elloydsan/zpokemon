@@ -15,11 +15,13 @@ public class Encoder {
 	/**
 	 * Encode a packet to Base64.
 	 * 
+	 * Removes new line arguments, so we can have longer packets :)
+	 * 
 	 * @param packet
 	 * @return String
 	 */
 	public static String encode(String packet){
-		return new BASE64Encoder().encode(packet.getBytes());
+		return new BASE64Encoder().encode(packet.getBytes()).replace("\r\n", "");
 	}
 	
 	/**
@@ -36,6 +38,13 @@ public class Encoder {
 		}
 		
 		return null;
+	}
+	
+	public static void main(String[] args){
+		String s = "Test test test one two three Test test test one two three Test test test one two three Test test test one two three Test test test one two three";
+		
+		System.out.println(encode(s).replace("\r\n", ""));
+		System.out.println(decode(encode(s).replace("\r\n", "")));
 	}
 
 }

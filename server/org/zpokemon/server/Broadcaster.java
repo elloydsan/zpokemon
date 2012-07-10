@@ -1,5 +1,7 @@
 package org.zpokemon.server;
 
+import org.zpokemon.PlayerEntity;
+
 /**
  * 
  * @author Troy
@@ -13,7 +15,7 @@ public class Broadcaster {
 	 * Send a packet to all clients.
 	 */
 	public static void broadcast(String packet){
-		for(PokemonThread pt : Constants.getClients()){
+		for(ClientThread pt : Constants.getClients()){
 			pt.sendPacket(packet);
 		}
 	}
@@ -23,7 +25,7 @@ public class Broadcaster {
 	 */
 	public static void playerList(){
 		for(PlayerEntity p : Constants.getPlayerList())
-			broadcast("1~" + p.getId() + ":" + p.getX() + ":" + p.getY() + ":" + p.getAnimation());
+			broadcast(Packets.playerUpdate(p.getId()));
 	}
 
 }

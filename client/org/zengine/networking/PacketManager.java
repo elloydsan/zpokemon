@@ -6,10 +6,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import org.pokemon.GameConstants;
 import org.pokemon.OtherPlayerEntity;
+import org.pokemon.Pokemon;
+import org.pokemon.TileMap;
 
 /**
  * 
@@ -32,12 +35,11 @@ import org.pokemon.OtherPlayerEntity;
  */
 public class PacketManager {
 	private Thread listener;
-	private boolean running = false;
 	
 	private BufferedReader in;
     private PrintWriter out;
     private Socket socket;
-    private String reply;
+    private String fromServer;
     private String[] header;
     private String[] replyPacket;
 	
@@ -56,13 +58,13 @@ public class PacketManager {
 		
 		try {
 			this.ipAddress = InetAddress.getByName(ipAddress);
-		}catch(UnknownHostException e1) {
-			e1.printStackTrace();
-			return;
-		}
-		
-		try {
 			socket = new Socket(this.ipAddress, this.port);
+			
+			 try{
+				 this.socket.setTcpNoDelay(true);
+			 }catch (SocketException e) {
+				 e.printStackTrace();
+			 }
 	        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	        out = new PrintWriter(socket.getOutputStream(), true);
 	        
@@ -71,10 +73,16 @@ public class PacketManager {
 	        		GameConstants.getPlayer().getX() + ":" + 
 	        		GameConstants.getPlayer().getY());
 	        
-	        //Get player list
-	        sendPacket(PacketHeaders.GET_PLAYER_LIST.getHeader() + ":");
+	        //Download map.
+	        sendPacket(PacketHeaders.MAP_CREATE.getHeader() + ":");
 	        
-	        running = true;
+	        //Fill map.
+	        sendPacket(PacketHeaders.MAP_CHUNK.getHeader() + ":");
+	        
+	        //Get player list
+	        sendPacket(PacketHeaders.PLAYER_LIST.getHeader() + ":");
+	        
+	        //Start a new listener.
 	        listener = new Thread(){
 	        	@Override
 				public void run(){
@@ -82,10 +90,15 @@ public class PacketManager {
 				}
 	        };
 	        listener.start();
+		}catch(UnknownHostException e1) {
+			e1.printStackTrace();
+			return;
 		}catch(IOException e) {
-			e.printStackTrace();
+			System.out.println("Failed to connect to the server.");
+			System.exit(-1);
 			return;
 		}
+
 	}
 	
 	/**
@@ -103,15 +116,14 @@ public class PacketManager {
 	 * 
 	 */
 	private void listen(){
-		while(running){ //Replace with a variable
-			try{
-				reply = Encoder.decode(in.readLine());
+		try{
+			while((fromServer = in.readLine()) != null){
+				fromServer = Encoder.decode(fromServer);
 				
-				if(reply != null && reply.contains("~")){
-					header = reply.split("~");
+				if(fromServer != null && fromServer.contains("~")){
+					header = fromServer.split("~");
 					if(header[1].contains(":"))
 						replyPacket = header[1].split(":");
-					//System.out.println(input[0]); //DEBUG
 					
 					 /**
 			         * Switch through packet headers.
@@ -123,8 +135,6 @@ public class PacketManager {
 				        GameConstants.getPlayer().setId(Short.parseShort(header[1]));
 			        	break;
 			        case 1: //Get player list
-			        	replyPacket = header[1].split(":");
-			        			
 			        	if(Short.parseShort(replyPacket[0]) != GameConstants.getPlayer().getId()){
 			        		//Try and find the user.
 			        		OtherPlayerEntity found = GameConstants.getPlayer(Short.parseShort(replyPacket[0]));
@@ -152,6 +162,65 @@ public class PacketManager {
 			        	break;
 			        case 3: //Disconnect player
 			        	GameConstants.getPlayerList().remove(GameConstants.getPlayer(Short.parseShort(header[1])));
+			        	break;
+			        case 4: //Create map
+			        	GameConstants.setTilemap(new TileMap(Short.parseShort(replyPacket[0]),
+			        			Short.parseShort(replyPacket[1]),
+			        			Short.parseShort(replyPacket[2]),
+			        			Short.parseShort(replyPacket[3]),
+			        			Pokemon.tileTextures));
+			        	
+			        	GameConstants.getTilemap().setxOffSet(Double.parseDouble(replyPacket[4]));
+			        	GameConstants.getTilemap().setyOffSet(Double.parseDouble(replyPacket[5]));
+			        	GameConstants.getPlayer().setX(Double.parseDouble(replyPacket[6]));
+			        	GameConstants.getPlayer().setY(Double.parseDouble(replyPacket[7]));
+			        	break;
+			        case 5: //Download map chunks / fill map data.
+			        	if(header.length > 2){
+			        		replyPacket = header[2].split(":");
+			        	
+				        	for(int i = 0; i < replyPacket.length; i++){
+				        		switch(Integer.parseInt(header[1])){
+				        		case 1:
+				        			if(replyPacket[i].contains(",")){
+						        		String[] split = replyPacket[i].split(",");
+						        		
+						        		int x = Integer.parseInt(split[0]);
+						        		int y = Integer.parseInt(split[1]);
+						        		
+						        		GameConstants.getTilemap().getLayer1()[x][y].setState(Byte.parseByte(split[2]));
+						        		GameConstants.getTilemap().getLayer1()[x][y].setInteractive(Byte.parseByte(split[3]));
+						        		GameConstants.getTilemap().getLayer1()[x][y].setImage(Short.parseShort(split[4]));
+					        		}
+				        			break;
+				        		case 2:
+				        			if(replyPacket[i].contains(",")){
+						        		String[] split = replyPacket[i].split(",");
+						        		
+						        		int x = Integer.parseInt(split[0]);
+						        		int y = Integer.parseInt(split[1]);
+						        		
+						        		GameConstants.getTilemap().getLayer2()[x][y].setState(Byte.parseByte(split[2]));
+						        		GameConstants.getTilemap().getLayer2()[x][y].setInteractive(Byte.parseByte(split[3]));
+						        		GameConstants.getTilemap().getLayer2()[x][y].setImage(Short.parseShort(split[4]));
+					        		}
+				        			break;
+				        		case 3:
+				        			if(replyPacket[i].contains(",")){
+						        		String[] split = replyPacket[i].split(",");
+						        		
+						        		int x = Integer.parseInt(split[0]);
+						        		int y = Integer.parseInt(split[1]);
+						        		
+						        		GameConstants.getTilemap().getLayer3()[x][y].setState(Byte.parseByte(split[2]));
+						        		GameConstants.getTilemap().getLayer3()[x][y].setInteractive(Byte.parseByte(split[3]));
+						        		GameConstants.getTilemap().getLayer3()[x][y].setImage(Short.parseShort(split[4]));
+					        		}
+				        			break;
+				        		}
+				        	}
+			        	}
+			        	break;
 			        default:
 			        	break;
 			        }
@@ -160,14 +229,15 @@ public class PacketManager {
 		        /**
 		         * Have a small sleep to let the CPU recover.
 		         */
-		        Thread.sleep(10);
-			}catch(Exception e){
-				e.printStackTrace();
-				running = false;
-				while(!listener.isInterrupted())
-					listener.interrupt();
-				disconnect();
+				Thread.sleep(10);
 			}
+		}catch(Exception e){
+			e.printStackTrace();
+			
+			while(!listener.isInterrupted())
+				listener.interrupt();
+			
+			disconnect();
 		}
 	}
 	
@@ -176,6 +246,8 @@ public class PacketManager {
 	 */
 	public void disconnect(){
 		try{
+			out.close();
+			in.close();
 			socket.close();
 		}catch(IOException e){
 			e.printStackTrace();
@@ -188,8 +260,11 @@ public class PacketManager {
 	 * @param packet
 	 */
 	public void sendPacket(String packet){
-		if(packet != null)
+		//System.out.println("Packet Size: " + packet.length());
+		if(packet != null){
 			out.println(Encoder.encode(packet));
+			out.flush();
+		}
 	}
 	
 	/**

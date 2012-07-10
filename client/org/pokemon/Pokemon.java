@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import org.zengine.Constants;
 import org.zengine.Game;
 import org.zengine.GameFrame;
-import org.zengine.TileMap;
 import org.zengine.networking.PacketManager;
 import org.zengine.uils.Image;
 
@@ -25,50 +24,100 @@ public class Pokemon extends Game{
 	private final long UPDATE_PERIOD = 1000L / UPDATE_RATE;
 	public static long beginTime, timeTaken, timeLeft, lastLoopTime, delta;
 	
+	public GameStates state = GameStates.LOADING;
+	
 	public static boolean left,right,up,down;
 
 	public static BufferedImage[] tileTextures;
 	private Point xy = new Point(0,0);
 
 	@Override
-	public void draw(Graphics g) {	
-		GameConstants.getTilemap().draw(g);
-		GameConstants.getPlayer().draw(g);
-		
-		//Multiplayer
-		if(GameConstants.getPlayerList() != null)
-		for(OtherPlayerEntity p : GameConstants.getPlayerList()){
-			p.draw(g);
+	public void draw(Graphics g) {
+		switch(state){
+		case LOADING:
+			g.setColor(Color.WHITE);
+			g.drawString("Loading...", (Constants.getGameFrame().getWidth() / 2) - 30, (Constants.getGameFrame().getHeight() /2) - 30);
+			break;
+		case INITIALISED:
+			break;
+		case MULTIPLAYER:
+			break;
+		case CONNECT:
+			break;
+		case PLAYING:
+			GameConstants.getTilemap().draw(g);
+			GameConstants.getPlayer().draw(g);
+			
+			//Multiplayer
+			if(GameConstants.getPlayerList() != null)
+			for(OtherPlayerEntity p : GameConstants.getPlayerList())
+				p.draw(g);
+			break;
+		case PAUSED:
+			break;
+		case BATTLE:	
+			break;
+		case DESTROYED:
+			break;
 		}
 		
-		g.setColor(Color.WHITE);
-		g.drawString("FPS: " + Constants.getRender().getFps(), 10, 20);
-		g.drawString("Mouse XY: " + xy.x + "," + xy.y, 10, 35);
+		if(state != GameStates.LOADING){
+			g.setColor(Color.WHITE);
+			g.drawString("FPS: " + Constants.getRender().getFps(), 10, 20);
+			g.drawString("Mouse XY: " + xy.x + "," + xy.y, 10, 35);
+			
+			/**
+			 * Draw custom mouse.
+			 */
+			g.setColor(Color.RED);
+			g.drawLine(xy.x -4, xy.y, xy.x +4, xy.y);
+			g.drawLine(xy.x, xy.y -4, xy.x, xy.y +4);
+		}
 	}
 
 	@Override
 	public void onStart() {
-		System.out.println("Loading Pokemon.");
-		tileTextures = Image.splitImage(Image.makeColorTransparent("resources/sprites/textures/pokemonTextures.gif", new Color(255,0,255)), 15, 15);
-		GameConstants.setPlayerImages(Image.splitImage(Image.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
-	}
-
-	@Override
-	public void start() {
 		/**
 		 * Init variables etc...
 		 */
+		
+		System.out.println("Loading Pokemon.");
+		tileTextures = Image.splitImage(Image.makeColorTransparent("resources/sprites/textures/pokemonTextures.gif", new Color(255,0,255)), 15, 15);
+		GameConstants.setPlayerImages(Image.splitImage(Image.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
+		
 		new GameFrame("Pokemon",this);
+		Constants.getGameFrame().setResizable(false);
+		Constants.getGameFrame().consumeMouse(true);
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
-		GameConstants.setTilemap(new TileMap((short)20,(short)15,(short)20,(short)20,tileTextures));
-		GameConstants.setPlayer(new PlayerEntity((short)180, (short)60, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0));
+		GameConstants.setPlayer(new PlayerEntity((short)280, (short)160, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0));
+		//GameConstants.setTilemap(new TileMap((short)20,(short)15,(short)20,(short)20,tileTextures));
 		
 		/**
 		 * Start the game loop
 		 */
 		System.out.println("Starting game.");
-		if(GameConstants.isMultiplayer())
+		if(GameConstants.isMultiplayer()){
 			GameConstants.setPacketManager(new PacketManager("127.0.0.1",5632));
+			//GameConstants.setPacketManager(new PacketManager("118.208.150.20",5632));
+		}else{
+			GameConstants.setTilemap(new TileMap((short)30,(short)20,(short)20,(short)20,tileTextures));
+		}
+	}
+
+	@Override
+	public void start() {
+		/**
+		 * Anything else that need's to happen on start.
+		 */
+		while(GameConstants.getTilemap() == null){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		state = GameStates.PLAYING;
 		gameLoop();
 	}
 	
@@ -122,13 +171,22 @@ public class Pokemon extends Game{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch(e.getKeyCode()){
+		case KeyEvent.VK_ESCAPE: //Full screen
+			if(Constants.isFullscreen()){
+				Constants.setFullscreen(false);
+				Constants.getGameFrame().setFullscreen(false);
+			}else{
+				Constants.setFullscreen(true);
+				Constants.getGameFrame().setFullscreen(true);
+			}
+			break;
 		case KeyEvent.VK_W: //UP
 			if(!GameConstants.getPlayer().isMoving()/* && !down && !left && !right*/)
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() / GameConstants.getTilemap().getTileWidth()), 
 					(int) (GameConstants.getPlayer().getY() - GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
 				up = true;
 				GameConstants.getPlayer().setAnimation((byte) 6);
-				GameConstants.getPlayer().setDirection((byte)0);
+				GameConstants.getPlayer().setDirection((byte) 0);
 				GameConstants.getPlayer().setDy(GameConstants.getPlayer().getDy() - GameConstants.getTilemap().getTileHeight());
 				GameConstants.getPlayer().setMoving(true);
 			}
@@ -139,7 +197,7 @@ public class Pokemon extends Game{
 					(int) (GameConstants.getPlayer().getY() + GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
 				down = true;
 				GameConstants.getPlayer().setAnimation((byte) 0);
-				GameConstants.getPlayer().setDirection((byte)1);
+				GameConstants.getPlayer().setDirection((byte) 1);
 				GameConstants.getPlayer().setDy(GameConstants.getPlayer().getDy() + GameConstants.getTilemap().getTileHeight());
 				GameConstants.getPlayer().setMoving(true);
 			}
@@ -150,7 +208,7 @@ public class Pokemon extends Game{
 					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
 				left = true;
 				GameConstants.getPlayer().setAnimation((byte) 3);
-				GameConstants.getPlayer().setDirection((byte)2);
+				GameConstants.getPlayer().setDirection((byte) 2);
 				GameConstants.getPlayer().setDx(GameConstants.getPlayer().getDx() - GameConstants.getTilemap().getTileWidth());
 				GameConstants.getPlayer().setMoving(true);
 			}
@@ -161,7 +219,7 @@ public class Pokemon extends Game{
 					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
 				right = true;
 				GameConstants.getPlayer().setAnimation((byte) 9);
-				GameConstants.getPlayer().setDirection((byte)3);
+				GameConstants.getPlayer().setDirection((byte) 3);
 				GameConstants.getPlayer().setDx(GameConstants.getPlayer().getDx() + GameConstants.getTilemap().getTileWidth());
 				GameConstants.getPlayer().setMoving(true);
 			}
@@ -194,19 +252,7 @@ public class Pokemon extends Game{
 	 * Key typed
 	 */
 	@Override
-	public void keyTyped(KeyEvent e) {
-		switch(e.getKeyCode()){
-		case KeyEvent.VK_ESCAPE: //Full screen
-			if(Constants.isFullscreen()){
-				Constants.setFullscreen(false);
-				Constants.getGameFrame().setFullscreen(false);
-			}else{
-				Constants.setFullscreen(true);
-				Constants.getGameFrame().setFullscreen(true);
-			}
-			break;
-		}
-	}
+	public void keyTyped(KeyEvent e) {}
 
 	/**
 	 * These event's will most likely be forwarded

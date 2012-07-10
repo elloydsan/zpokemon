@@ -10,8 +10,11 @@ package org.zengine.networking;
  */
 public enum PacketHeaders {
 	LOGIN("0~"),
-	GET_PLAYER_LIST("1~"),
-	PLAYER_MOVE("2~");
+	PLAYER_LIST("1~"),
+	PLAYER_MOVE("2~"),
+	PLAYER_DISCONNECT("3~"),
+	MAP_CREATE("4~"),
+	MAP_CHUNK("5~");
 	
 	private final String header;
 	
