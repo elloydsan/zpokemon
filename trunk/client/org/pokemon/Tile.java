@@ -1,4 +1,4 @@
-package org.zengine;
+package org.pokemon;
 
 /**
  * 
@@ -8,7 +8,7 @@ package org.zengine;
 public class Tile {
 	private byte state;
 	private byte interactive;
-	private int image;
+	private short image;
 	
 	/**
 	 * Create a new tile.
@@ -19,7 +19,7 @@ public class Tile {
 	 * @param img
 	 * @param interactive
 	 */
-	public Tile(byte state, byte interactive, int img){
+	public Tile(byte state, byte interactive, short img){
 		this.state = state;
 		this.interactive = interactive;
 		this.image = img;
@@ -45,7 +45,7 @@ public class Tile {
 		this.interactive = interactive;
 	}
 
-	public void setImage(int image) {
+	public void setImage(short image) {
 		this.image = image;
 	}
 

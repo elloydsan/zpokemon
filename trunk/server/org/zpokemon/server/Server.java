@@ -14,6 +14,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import org.zpokemon.TileMap;
+
 /**
  * 
  * @author Troy
@@ -30,6 +32,9 @@ import javax.swing.text.StyledDocument;
  * One day down the track, add in some basic AES encryption or
  * such over the packet messages to try and stop anyone sending
  * false packets.
+ * 
+ * Implemented a keygen and a AES encoder.
+ * We wont start using these yet though.
  *
  */
 public class Server extends JFrame{
@@ -56,6 +61,7 @@ public class Server extends JFrame{
 		
 		log.setSize(600, 300);
 		log.setBackground(Color.BLACK);
+		log.setEditable(false);
 		
 		logContainer = new JScrollPane(log,
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -66,6 +72,9 @@ public class Server extends JFrame{
 		
 		this.add(logContainer);
 		this.setVisible(true);
+		
+		//Create a new tilemap.
+		Constants.setTileMap(new TileMap((short)30,(short)20,(short)20,(short)20,(short)280, (short)160));
 		
 		try{
 			ServerLoop();
@@ -95,7 +104,7 @@ public class Server extends JFrame{
 	     * accept new clients.
 	     */
 	    while(listening){
-	    	Constants.getClients().add(new PokemonThread(serverSocket.accept(), clientNumber++));
+	    	Constants.getClients().add(new ClientThread(serverSocket.accept(), clientNumber++));
 	    	 
 	    	try {
 	    		Thread.sleep(100);

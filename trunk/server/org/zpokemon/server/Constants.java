@@ -1,6 +1,15 @@
 package org.zpokemon.server;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.zpokemon.PlayerEntity;
+import org.zpokemon.TileMap;
 
 /**
  * 
@@ -8,14 +17,49 @@ import java.util.ArrayList;
  *
  */
 public class Constants {
-	public static ArrayList<PokemonThread> clients = new ArrayList<PokemonThread>();
+	public static ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 	private static ArrayList<PlayerEntity> playerList = new ArrayList<PlayerEntity>();
+	
+	public static TileMap tileMap;
+	
+    /**
+     * Convert the string back to bytes.
+     * 
+     * @param s
+     * @return byte[]
+     */
+	public byte[] stringToBytes(String s) {
+	    byte[] b2 = new BigInteger(s, 36).toByteArray();
+	    return Arrays.copyOfRange(b2, 1, b2.length);
+	}
+	
+	/**
+	 * In the future we may let the server generate a secret key which
+	 * will then be passed to the client as well to encrypt and decrypt
+	 * packets to keep peering eyes confused.
+	 * 
+	 * @return SecretKeySpec
+	 */
+	public SecretKeySpec generateSecretKey(){
+		try{
+	   	 	KeyGenerator kgen = KeyGenerator.getInstance("AES");
+	        kgen.init(128);
+	        SecretKey skey = kgen.generateKey();
+	        byte[] raw = skey.getEncoded();
+	
+	        return new SecretKeySpec(raw, "AES");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 
-	public static ArrayList<PokemonThread> getClients() {
+	public static ArrayList<ClientThread> getClients() {
 		return clients;
 	}
 
-	public static void setClients(ArrayList<PokemonThread> clients) {
+	public static void setClients(ArrayList<ClientThread> clients) {
 		Constants.clients = clients;
 	}
 	
@@ -24,7 +68,7 @@ public class Constants {
 	 * 
 	 * @param client
 	 */
-	public static void removeClient(PokemonThread client){
+	public static void removeClient(ClientThread client){
 		while(!client.isInterrupted())
 			client.interrupt();
 		
@@ -51,6 +95,14 @@ public class Constants {
 
 	public static void setPlayerList(ArrayList<PlayerEntity> playerList) {
 		Constants.playerList = playerList;
+	}
+
+	public static TileMap getTileMap() {
+		return tileMap;
+	}
+
+	public static void setTileMap(TileMap tileMap) {
+		Constants.tileMap = tileMap;
 	}
 
 }

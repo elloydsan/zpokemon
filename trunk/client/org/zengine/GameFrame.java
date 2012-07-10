@@ -1,9 +1,14 @@
 package org.zengine;
 
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
@@ -46,8 +51,31 @@ public class GameFrame extends JFrame implements ComponentListener{
 		this.addComponentListener(this);
 		this.add(canvas);
 		this.setVisible(true);
+		this.requestFocus();
 		
 		canvas.init();
+	}
+	
+	/**
+	 * Consume the mouse to allow for a custom drawn
+	 * mouse on screen.
+	 * 
+	 * @param consume
+	 */
+	public void consumeMouse(boolean consume){
+		if(consume){
+			Toolkit toolkit = Toolkit.getDefaultToolkit();
+			Dimension dim = toolkit.getBestCursorSize(1, 1);
+			BufferedImage cursorImg = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2d = cursorImg.createGraphics();
+			g2d.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+			g2d.clearRect(0, 0, dim.width, dim.height);
+			g2d.dispose();
+			Cursor hiddenCursor = toolkit.createCustomCursor(cursorImg, new Point(0,0), "hiddenCursor");
+			this.setCursor(hiddenCursor);
+		}else{
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		}
 	}
 	
 	/**

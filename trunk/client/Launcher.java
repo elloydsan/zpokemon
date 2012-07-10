@@ -1,7 +1,4 @@
-import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
-
+import org.pokemon.Pokemon;
 import org.zengine.Constants;
 import org.zengine.Game;
 
@@ -15,10 +12,12 @@ public class Launcher {
 
 	public Launcher(String gameName){
 		try{
-			 URLClassLoader scriptLoader = new URLClassLoader(new URL[] {new URL("file://" + new File("").getAbsolutePath() + "/") });
-			 final Game game = (Game)scriptLoader.loadClass(gameName).newInstance();
+			// URLClassLoader scriptLoader = new URLClassLoader(new URL[] {new URL("file://" + new File("").getAbsolutePath() + "/") });
+			// final Game game = (Game)scriptLoader.loadClass(gameName).newInstance();
+			
+			Game game = new Pokemon();
 			 
-			 if(game != null){
+			 //if(game != null){
 				 game.onStart();
 				 game.start();
 				 game.onEnd();
@@ -27,9 +26,9 @@ public class Launcher {
 					 Constants.getGameFrame().dispose();
 					 Constants.getRender().destroy();
 				 }
-			 }else{
-				 System.out.println("Failed to load your game.");
-			 }
+			 //}else{
+			//	 System.out.println("Failed to load your game.");
+			// }
 		}catch(Exception e){
 			e.printStackTrace();
 			System.out.println("Failed to load your game.");

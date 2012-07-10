@@ -3,7 +3,6 @@ package org.pokemon;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import org.zengine.TileMap;
 import org.zengine.networking.PacketManager;
 
 /**
@@ -56,7 +55,9 @@ public class GameConstants {
 		if(x < 0 || x >= tilemap.getTileCols()) return false;
 		if(y < 0 || y >= tilemap.getTileRows()) return false;
 		
-		return (tilemap.getLayer1()[x][y].getState() == 0);
+		return (tilemap.getLayer1()[x][y].getState() == 0) && 
+				(tilemap.getLayer2()[x][y].getState() == 0) && 
+				(tilemap.getLayer3()[x][y].getState() == 0);
 	}
 
 	public static boolean isMultiplayer() {

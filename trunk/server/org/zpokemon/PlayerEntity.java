@@ -1,4 +1,4 @@
-package org.zpokemon.server;
+package org.zpokemon;
 
 
 /**
