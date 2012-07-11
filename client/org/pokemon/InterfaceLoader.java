@@ -13,6 +13,10 @@ import javax.imageio.ImageIO;
  * @author NerdyGnome
  * 
  * Reads in the given interface images into memory
+ * 
+ * Troy:
+ * I'm not really sure why this class exists?
+ * Or where it would come in handy :P
  *
  */
 public class InterfaceLoader {

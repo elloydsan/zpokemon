@@ -116,8 +116,8 @@ public class ClientThread extends Thread {
 	                	sendPacket(Packets.mapChunkLayer2());
 	                	sendPacket(Packets.mapChunkLayer3());
 	                	break;
-	                case 6: // Chatbox
-	                	//Once again, header id : msg
+	                case 6: //Chat
+	                	if(packet.length > 1)
 	                	Broadcaster.broadcast(PacketHeaders.PLAYER_SEND_MESSAGE.getHeader() + 
 	                			packet[0] + ":" + 
 	                			packet[1]);
