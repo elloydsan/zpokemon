@@ -221,12 +221,11 @@ public class PacketManager {
 				        	}
 			        	}
 			        	break;
-			        case 6: // Send message from chatbox to all clients
-			        	// We don't want to send copies of messages to the player that wrote the message
-			        	if((short)Integer.parseInt(replyPacket[0]) != GameConstants.getPlayer().getId()) {
+			        case 6: //Receive message's from all clients.
+			        	if((short)Integer.parseInt(replyPacket[0]) != GameConstants.getPlayer().getId())
 			        		GameConstants.getChat().setChatlog(GameConstants.getChat().getChatlog() + 
-			        			replyPacket[0] + " - " + replyPacket[1] + "~");
-			        	}
+			        				replyPacket[0] + " - " + 
+			        				replyPacket[1] + "~");
 			        	break;
 			        default:
 			        	break;

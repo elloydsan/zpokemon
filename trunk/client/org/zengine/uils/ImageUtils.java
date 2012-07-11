@@ -13,8 +13,8 @@ import javax.imageio.ImageIO;
  * @author Troy
  *
  */
-public class Image {
-	private static final Image instance = new Image();
+public class ImageUtils {
+	private static final ImageUtils instance = new ImageUtils();
 	
 	/**
 	 * Load a image.
@@ -79,6 +79,23 @@ public class Image {
             }  
         }  
         return dimg;  
+    }
+    
+    /**
+     * Load a image with a certain transparency.
+     * 
+     * @param url
+     * @param transperancy
+     * @return BufferedImage
+     */
+    public static BufferedImage loadTranslucentImage(String url, float transperancy) {   
+        BufferedImage loaded = loadImage(url);   
+        BufferedImage aimg = new BufferedImage(loaded.getWidth(), loaded.getHeight(), BufferedImage.TRANSLUCENT);  
+        Graphics2D g = aimg.createGraphics();   
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperancy));   
+        g.drawImage(loaded, null, 0, 0);   
+        g.dispose();    
+        return aimg;  
     }
 	
 	/**

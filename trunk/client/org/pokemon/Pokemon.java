@@ -11,9 +11,8 @@ import java.awt.image.BufferedImage;
 import org.zengine.Constants;
 import org.zengine.Game;
 import org.zengine.GameFrame;
-import org.zengine.networking.PacketHeaders;
 import org.zengine.networking.PacketManager;
-import org.zengine.uils.Image;
+import org.zengine.uils.ImageUtils;
 
 /**
  * 
@@ -67,9 +66,11 @@ public class Pokemon extends Game{
 		}
 		
 		if(state != GameStates.LOADING){
-			g.setColor(Color.WHITE);
-			g.drawString("FPS: " + Constants.getRender().getFps(), 10, 20);
-			g.drawString("Mouse XY: " + xy.x + "," + xy.y, 10, 35);
+			if(!GameConstants.getChat().isChatMenuOpen()){
+				g.setColor(Color.WHITE);
+				g.drawString("FPS: " + Constants.getRender().getFps(), 10, 20);
+				g.drawString("Mouse XY: " + xy.x + "," + xy.y, 10, 35);
+			}
 			
 			/**
 			 * Draw custom mouse.
@@ -85,26 +86,23 @@ public class Pokemon extends Game{
 		/**
 		 * Init variables etc...
 		 */
-		
 		System.out.println("Loading Pokemon.");
-		tileTextures = Image.splitImage(Image.makeColorTransparent("resources/sprites/textures/pokemonTextures.gif", new Color(255,0,255)), 15, 15);
-		GameConstants.setPlayerImages(Image.splitImage(Image.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
+		tileTextures = ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/textures/pokemonTextures.gif", new Color(255,0,255)), 15, 15);
+		GameConstants.setPlayerImages(ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
 		
 		new GameFrame("Pokemon",this);
 		Constants.getGameFrame().setResizable(false);
 		Constants.getGameFrame().consumeMouse(true);
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
 		GameConstants.setPlayer(new PlayerEntity((short)280, (short)160, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0));
-		//GameConstants.setTilemap(new TileMap((short)20,(short)15,(short)20,(short)20,tileTextures));
 		GameConstants.setChat(new Chatbox());
 		
 		/**
-		 * Start the game loop
+		 * Multiplayer check.
 		 */
 		System.out.println("Starting game.");
 		if(GameConstants.isMultiplayer()){
 			GameConstants.setPacketManager(new PacketManager("127.0.0.1",5632));
-			//GameConstants.setPacketManager(new PacketManager("118.208.150.20",5632));
 		}else{
 			GameConstants.setTilemap(new TileMap((short)30,(short)20,(short)20,(short)20,tileTextures));
 		}
@@ -123,6 +121,12 @@ public class Pokemon extends Game{
 			}
 		}
 		
+		/**
+		 * Start the game loop.
+		 * 
+		 * This state will be set from a menu
+		 * screen later on.
+		 */
 		state = GameStates.PLAYING;
 		gameLoop();
 	}
@@ -175,7 +179,7 @@ public class Pokemon extends Game{
 	 * to only allow one key press at a time.
 	 */
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public void keyPressed(KeyEvent e){
 		switch(e.getKeyCode()){
 		case KeyEvent.VK_ESCAPE: //Full screen
 			if(Constants.isFullscreen()){
@@ -187,7 +191,7 @@ public class Pokemon extends Game{
 			}
 			break;
 		case KeyEvent.VK_W: //UP
-			if(!GameConstants.getPlayer().isMoving()/* && !down && !left && !right*/)
+			if(!GameConstants.getPlayer().isMoving() && !GameConstants.getChat().isChatMenuOpen())
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() / GameConstants.getTilemap().getTileWidth()), 
 					(int) (GameConstants.getPlayer().getY() - GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
 				up = true;
@@ -198,7 +202,7 @@ public class Pokemon extends Game{
 			}
 			break;
 		case KeyEvent.VK_S: //DOWN
-			if(!GameConstants.getPlayer().isMoving()/* && !up && !left && !right*/)
+			if(!GameConstants.getPlayer().isMoving() && !GameConstants.getChat().isChatMenuOpen())
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() / GameConstants.getTilemap().getTileWidth()), 
 					(int) (GameConstants.getPlayer().getY() + GameConstants.getTilemap().getTileHeight()) / GameConstants.getTilemap().getTileHeight())){
 				down = true;
@@ -209,7 +213,7 @@ public class Pokemon extends Game{
 			}
 			break;
 		case KeyEvent.VK_A: //LEFT
-			if(!GameConstants.getPlayer().isMoving()/* && !up && !down && !right*/)
+			if(!GameConstants.getPlayer().isMoving() && !GameConstants.getChat().isChatMenuOpen())
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() - GameConstants.getTilemap().getTileWidth()) / GameConstants.getTilemap().getTileWidth(), 
 					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
 				left = true;
@@ -220,7 +224,7 @@ public class Pokemon extends Game{
 			}
 			break;
 		case KeyEvent.VK_D: //RIGHT
-			if(!GameConstants.getPlayer().isMoving()/* && !up && !down && !left*/)
+			if(!GameConstants.getPlayer().isMoving() && !GameConstants.getChat().isChatMenuOpen())
 			if(GameConstants.isTileFree((int)(GameConstants.getPlayer().getX() + GameConstants.getTilemap().getTileWidth()) / GameConstants.getTilemap().getTileWidth(), 
 					(int)GameConstants.getPlayer().getY() / GameConstants.getTilemap().getTileHeight())){
 				right = true;
@@ -230,59 +234,23 @@ public class Pokemon extends Game{
 				GameConstants.getPlayer().setMoving(true);
 			}
 			break;
-		case KeyEvent.VK_CAPS_LOCK: // CHATMENU
-			
-			// Opening or closing the menu
+		case KeyEvent.VK_PAGE_DOWN: // CHATMENU
 			if(GameConstants.getChat().isChatMenuOpen()) { 
-				System.out.println("Closing chatmenu...");
 				GameConstants.getChat().setChatMenuOpen(false);			
 				GameConstants.getChat().setChatString("");
-			}
-			else {
-				GameConstants.getChat().setChatMenuOpen(true);
-				System.out.println("Opening chatmenu...");					
+			}else {
+				GameConstants.getChat().setChatMenuOpen(true);				
 			}
 			break;
-		} // End of switch statement
+		}
 		
-		/*
-		 * Checks input for chatmenu
+		/**
+		 * Checks input for chat menu.
 		 */
-		if(GameConstants.getChat().isChatMenuOpen()) {
-			
-			// We don't want to write stuff for these buttons
-			if(e.getKeyCode() != KeyEvent.VK_ENTER && e.getKeyCode() != KeyEvent.VK_CAPS_LOCK &&
-					e.getKeyCode() != KeyEvent.VK_SHIFT
-					&& GameConstants.getChat().getCurNrOfCharacters() < GameConstants.getChat().getMaximumCharacters()) {	
-				GameConstants.getChat().setChatString(GameConstants.getChat().getChatString() + e.getKeyChar());	
-				GameConstants.getChat().setCurNrOfCharacters((byte) ((GameConstants.getChat().getCurNrOfCharacters()) + 1));
-				
-			}
-			
-			//Kolla efter backspace här, då vill vi ta bort en siffra
-			
-			// This should send the whole string/log to the server
-			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-				
-				GameConstants.getChat().setChatlog(GameConstants.getChat().getChatlog() + 
-						GameConstants.getPlayer().getId() + " - " +GameConstants.getChat().getChatString() + "~");
-				
-				//Check for multiplayer here
-				//This will send a packet to the server. Header ID : msg
-				GameConstants.getPacketManager().sendPacket(PacketHeaders.PLAYER_SEND_MESSAGE.getHeader() +
-						GameConstants.getPlayer().getId() + ":" +
-						GameConstants.getChat().getChatString());
-				
-				System.out.println("------------CHATLOG----------\n" + GameConstants.getChat().getChatlog() + "----\n");
-							
-				//After we've sent our message, we want to clear it
-				GameConstants.getChat().setChatString("");
-				GameConstants.getChat().setCurNrOfCharacters((byte) 0);
-			}
-						
+		if(GameConstants.getChat().isChatMenuOpen()){
+			GameConstants.getChat().sendMessage(e);
 		}
-		}
-	
+	}
 
 	/**
 	 * Key released

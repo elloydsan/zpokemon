@@ -46,11 +46,4 @@ public class FormulaCalculator {
 		return (a * t * baseExp * e * pokemonLevel) / (BATTLE_EXPERIENCE_CONSTANT * nrOfPokemon);		
 	}
 	
-	
-	
-	
-	
-	
-	
-
 }

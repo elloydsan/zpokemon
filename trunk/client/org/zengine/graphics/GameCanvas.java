@@ -32,7 +32,7 @@ public class GameCanvas extends Canvas{
 	 */
 	public void init(){
 		//Create two buffer strategy's for double buffering.
-		this.createBufferStrategy(2);
+		this.createBufferStrategy(3);
 		buffer = getBufferStrategy();
 	}
 	
