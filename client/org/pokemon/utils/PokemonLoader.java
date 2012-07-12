@@ -1,9 +1,12 @@
-package org.pokemon;
+package org.pokemon.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import org.pokemon.PokemonEntity;
+import org.pokemon.PokemonName;
 
 /**
  * 

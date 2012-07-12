@@ -106,7 +106,8 @@ public class Packets {
 				Constants.getPlayer(id).getId() + ":" + 
         		Constants.getPlayer(id).getX() + ":" + 
         		Constants.getPlayer(id).getY() + ":" + 
-        		Constants.getPlayer(id).getAnimation(); 
+        		Constants.getPlayer(id).getAnimation() + ":" +
+        		Constants.getPlayer(id).isInGrass();
 	}
 	
 	/**

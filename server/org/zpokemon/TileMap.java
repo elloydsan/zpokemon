@@ -79,31 +79,31 @@ public class TileMap{
 		layer1[4][0].setState((byte) 1);
 		layer1[5][0].setState((byte) 1);
 		
-		layer1[10][tileRows-1].setImage((short) 16);
-		layer1[11][tileRows-1].setImage((short) 16);
-		layer1[12][tileRows-1].setImage((short) 16);
-		layer1[13][tileRows-1].setImage((short) 16);
-		layer1[14][tileRows-1].setImage((short) 16);
-		layer1[15][tileRows-1].setImage((short) 16);
+		layer2[10][tileRows-1].setImage((short) 16);
+		layer2[11][tileRows-1].setImage((short) 16);
+		layer2[12][tileRows-1].setImage((short) 16);
+		layer2[13][tileRows-1].setImage((short) 16);
+		layer2[14][tileRows-1].setImage((short) 16);
+		layer2[15][tileRows-1].setImage((short) 16);
 		
-		layer1[10][tileRows-2].setImage((short) 15);
-		layer1[11][tileRows-2].setImage((short) 15);
-		layer1[12][tileRows-2].setImage((short) 15);
-		layer1[13][tileRows-2].setImage((short) 15);
-		layer1[14][tileRows-2].setImage((short) 15);
-		layer1[15][tileRows-2].setImage((short) 15);
+		layer2[10][tileRows-2].setImage((short) 15);
+		layer2[11][tileRows-2].setImage((short) 15);
+		layer2[12][tileRows-2].setImage((short) 15);
+		layer2[13][tileRows-2].setImage((short) 15);
+		layer2[14][tileRows-2].setImage((short) 15);
+		layer2[15][tileRows-2].setImage((short) 15);
 		
-		layer1[10][tileRows-3].setImage((short) 15);
-		layer1[11][tileRows-3].setImage((short) 15);
-		layer1[12][tileRows-3].setImage((short) 15);
-		layer1[13][tileRows-3].setImage((short) 15);
-		layer1[14][tileRows-3].setImage((short) 15);
-		layer1[15][tileRows-3].setImage((short) 15);
+		layer2[10][tileRows-3].setImage((short) 15);
+		layer2[11][tileRows-3].setImage((short) 15);
+		layer2[12][tileRows-3].setImage((short) 15);
+		layer2[13][tileRows-3].setImage((short) 15);
+		layer2[14][tileRows-3].setImage((short) 15);
+		layer2[15][tileRows-3].setImage((short) 15);
 		
 		/**
 		 * Set states
 		 */
-		layer1[10][tileRows-2].setState((byte) 2);
+		/*layer1[10][tileRows-2].setState((byte) 2);
 		layer1[11][tileRows-2].setState((byte) 2);
 		layer1[12][tileRows-2].setState((byte) 2);
 		layer1[13][tileRows-2].setState((byte) 2);
@@ -115,7 +115,7 @@ public class TileMap{
 		layer1[12][tileRows-3].setState((byte) 2);
 		layer1[13][tileRows-3].setState((byte) 2);
 		layer1[14][tileRows-3].setState((byte) 2);
-		layer1[15][tileRows-3].setState((byte) 2);
+		layer1[15][tileRows-3].setState((byte) 2);*/
 		
 		
 		

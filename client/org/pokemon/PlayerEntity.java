@@ -28,6 +28,7 @@ public class PlayerEntity extends Entity {
 	private int coins;	
 	private boolean onBike;
 	private boolean moving;
+	private boolean inGrass;
 	
 	/**
 	 * Construct a new player.
@@ -47,6 +48,9 @@ public class PlayerEntity extends Entity {
 		this.pixelJump = 4;
 		this.tickCount = 1;
 		this.coins = startCoins;
+		this.onBike = false;
+		this.moving = false;
+		this.inGrass = false;
 	}
 
 	public short getSpeed() {
@@ -81,6 +85,14 @@ public class PlayerEntity extends Entity {
 		this.moving = moving;
 	}
 	
+	public boolean isInGrass() {
+		return inGrass;
+	}
+
+	public void setInGrass(boolean inGrass) {
+		this.inGrass = inGrass;
+	}
+
 	/**
 	 * Move the player if needed.
 	 */
@@ -360,9 +372,6 @@ public class PlayerEntity extends Entity {
 		if(this.drawX != ((Constants.getWidth()/2) -30)){
 			this.drawX = (short) ((Constants.getWidth()/2) -30);
 			this.drawY = (short) ((Constants.getHeight()/2) -50);
-			
-			//Pokemon.tileMap.setxOffSet((short) ((short)(dx / 20) - Pokemon.tileMap.getxOffSet()));
-			//Pokemon.tileMap.setyOffSet((short) ((short)(dy / 20) - Pokemon.tileMap.getyOffSet()));
 		}
 		
 		if(GameConstants.isMultiplayer()){
@@ -370,7 +379,24 @@ public class PlayerEntity extends Entity {
 			g.drawString("You: " + super.getId(), drawX, drawY);
 		}
 		
+		if(!inGrass)
 		g.drawImage(GameConstants.getPlayerImages()[super.getAnimation()], drawX, drawY, super.getWidth(), super.getHeight(), null);
+	}
+
+	public short getDrawX() {
+		return drawX;
+	}
+
+	public void setDrawX(short drawX) {
+		this.drawX = drawX;
+	}
+
+	public short getDrawY() {
+		return drawY;
+	}
+
+	public void setDrawY(short drawY) {
+		this.drawY = drawY;
 	}
 
 }

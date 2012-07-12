@@ -91,7 +91,7 @@ public class Pokemon extends Game{
 		GameConstants.setPlayerImages(ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
 		
 		new GameFrame("Pokemon",this);
-		Constants.getGameFrame().setResizable(false);
+		Constants.getGameFrame().setResizable(true);
 		Constants.getGameFrame().consumeMouse(true);
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
 		GameConstants.setPlayer(new PlayerEntity((short)280, (short)160, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0));
@@ -103,6 +103,7 @@ public class Pokemon extends Game{
 		System.out.println("Starting game.");
 		if(GameConstants.isMultiplayer()){
 			GameConstants.setPacketManager(new PacketManager("127.0.0.1",5632));
+			//GameConstants.setPacketManager(new PacketManager("118.208.150.20",5632));
 		}else{
 			GameConstants.setTilemap(new TileMap((short)30,(short)20,(short)20,(short)20,tileTextures));
 		}
