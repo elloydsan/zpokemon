@@ -13,9 +13,9 @@ import java.awt.Graphics;
  */
 public class OtherPlayerEntity extends Entity {
 	private short speed;
-	private int coins;	
 	private boolean onBike;
 	private boolean moving;
+	private boolean inGrass;
 	
 	/**
 	 * Construct a new other player.
@@ -28,13 +28,11 @@ public class OtherPlayerEntity extends Entity {
 	 * @param delta
 	 * @param animation
 	 * @param speed
-	 * @param startCoins
 	 */
-	public OtherPlayerEntity(short id, double x, double y, short width, short height, byte delta, byte animation, short speed, int startCoins){
+	public OtherPlayerEntity(short id, double x, double y, short width, short height, byte delta, byte animation, short speed){
 		super(x,y,width,height,delta,animation);
 		super.setId(id);
 		this.speed = speed;
-		this.coins = startCoins;
 	}
 
 	public short getSpeed() {
@@ -43,14 +41,6 @@ public class OtherPlayerEntity extends Entity {
 
 	public void setSpeed(short speed) {
 		this.speed = speed;
-	}
-
-	public int getCoins() {
-		return coins;
-	}
-	
-	public void setCoins(int coins) {
-		this.coins = coins;
 	}
 	
 	public boolean isOnBike() {
@@ -69,6 +59,14 @@ public class OtherPlayerEntity extends Entity {
 		this.moving = moving;
 	}
 	
+	public boolean isInGrass() {
+		return inGrass;
+	}
+
+	public void setInGrass(boolean inGrass) {
+		this.inGrass = inGrass;
+	}
+
 	/**
 	 * Move the player if needed.
 	 */
@@ -83,7 +81,7 @@ public class OtherPlayerEntity extends Entity {
 				(int)super.getX() + (int)GameConstants.getTilemap().getxOffSet() -10, 
 				(int)super.getY() + (int)GameConstants.getTilemap().getyOffSet() -10);
 		
-		
+		if(!inGrass)
 		g.drawImage(GameConstants.getPlayerImages()[super.getAnimation()], 
 				(int)super.getX() + (int)GameConstants.getTilemap().getxOffSet() -10, 
 				(int)super.getY() + (int)GameConstants.getTilemap().getyOffSet() -10, 

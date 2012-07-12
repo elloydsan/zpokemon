@@ -14,6 +14,8 @@ public class Constants {
 	
 	private static int width = 800;
 	private static int height = 600;
+	private static int oldWidth = 800;
+	private static int oldHeight = 600;
 	private static int preferedWidth = 800;
 	private static int preferedHeight = 600;
 	private static int screenWidth = 800;
@@ -42,6 +44,9 @@ public class Constants {
 	}
 	
 	public static void setWidth(int width) {
+		if(Constants.width != Constants.oldWidth)
+			Constants.oldWidth = Constants.width;
+		
 		Constants.width = width;
 	}
 	
@@ -50,7 +55,26 @@ public class Constants {
 	}
 	
 	public static void setHeight(int height) {
+		if(Constants.height != Constants.oldHeight)
+			Constants.oldHeight = Constants.height;
+		
 		Constants.height = height;
+	}
+
+	public static int getOldWidth() {
+		return oldWidth;
+	}
+
+	public static void setOldWidth(int oldWidth) {
+		Constants.oldWidth = oldWidth;
+	}
+
+	public static int getOldHeight() {
+		return oldHeight;
+	}
+
+	public static void setOldHeight(int oldHeight) {
+		Constants.oldHeight = oldHeight;
 	}
 
 	public static int getPreferedWidth() {

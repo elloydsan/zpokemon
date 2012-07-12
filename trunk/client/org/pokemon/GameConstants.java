@@ -66,6 +66,12 @@ public class GameConstants {
 		if(x < 0 || x >= tilemap.getTileCols()) return false;
 		if(y < 0 || y >= tilemap.getTileRows()) return false;
 		
+		if(tilemap.getLayer2()[x][y].getImage() == 15)
+			player.setInGrass(true);
+		else
+			player.setInGrass(false);
+		
+		
 		return (tilemap.getLayer1()[x][y].getState() == 0) && 
 				(tilemap.getLayer2()[x][y].getState() == 0) && 
 				(tilemap.getLayer3()[x][y].getState() == 0);

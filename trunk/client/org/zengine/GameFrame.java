@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
+import org.pokemon.GameConstants;
 import org.zengine.graphics.GameCanvas;
 import org.zengine.graphics.Render;
 
@@ -24,7 +25,7 @@ public class GameFrame extends JFrame implements ComponentListener{
 	private static final long serialVersionUID = -2508508456984008132L;
 	
 	/**
-	 * Construct a new gameframe.
+	 * Construct a new game frame.
 	 * 
 	 * @param title
 	 * @param game
@@ -34,6 +35,7 @@ public class GameFrame extends JFrame implements ComponentListener{
 		this.setTitle(title);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(GameFrame.class.getResource("/resources/icons/defaulticon.png")));
 		this.setSize(Constants.getWidth(), Constants.getHeight());
+		this.setPreferredSize(new Dimension(Constants.getPreferedWidth(), Constants.getPreferedHeight()));
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setResizable(true);
@@ -87,17 +89,43 @@ public class GameFrame extends JFrame implements ComponentListener{
 		Constants.setFullscreen(fullscreen);
 		this.dispose();
 		
-		if(fullscreen){
+		/**
+		 * Just my luck, I write all this bloody code 
+		 * then find out hey... there is a built in method 
+		 * to do that..
+		 */
+		/*if(fullscreen){
+			Constants.setWidth(Constants.getScreenWidth());
+			Constants.setHeight(Constants.getScreenHeight());
+			
+			if(GameConstants.getTilemap() != null){
+				GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + 
+						(((double)Constants.getWidth() - (double)Constants.getOldWidth()) * (double)0.5));
+				
+				GameConstants.getTilemap().setyOffSet((double)GameConstants.getTilemap().getyOffSet() + 
+						(((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5));
+			}
+					
 			this.setSize(Constants.getScreenWidth(), Constants.getScreenHeight());
 			this.setLocation(0, 0);
 		}else{
+			Constants.setWidth(Constants.getPreferedWidth());
+			Constants.setHeight(Constants.getPreferedHeight());
+			
+			if(GameConstants.getTilemap() != null){
+				GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + 
+						(((double)Constants.getWidth() - (double)Constants.getOldWidth()) * (double)0.5));
+				
+				GameConstants.getTilemap().setyOffSet((double)GameConstants.getTilemap().getyOffSet() + 
+						(((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5));
+			}
+			
 			this.setSize(Constants.getPreferedWidth(), Constants.getPreferedHeight());
 			this.setLocationRelativeTo(null);
-		}
-		
-		System.out.println(Constants.getWidth());
+		}*/
 			
 		this.setUndecorated(fullscreen);
+		Constants.getGameCanvas().setFullscreen(this, fullscreen);
 		this.setVisible(true);
 	}
 
@@ -113,6 +141,16 @@ public class GameFrame extends JFrame implements ComponentListener{
 		
 		Constants.setWidth(getWidth());
 		Constants.setHeight(getHeight());
+		
+		if(GameConstants.getTilemap() != null){
+			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + 
+					(((double)Constants.getWidth() - (double)Constants.getOldWidth()) * (double)0.5));
+			
+			GameConstants.getTilemap().setyOffSet((double)GameConstants.getTilemap().getyOffSet() + 
+					(((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5));
+		}
+		
+		Constants.getGameCanvas().setSize(getWidth(), getHeight());
 	}
 
 	public void componentHidden(ComponentEvent arg0) {}

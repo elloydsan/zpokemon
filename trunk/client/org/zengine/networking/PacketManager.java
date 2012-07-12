@@ -143,6 +143,7 @@ public class PacketManager {
 			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setX(Double.parseDouble(replyPacket[1]));
 			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setY(Double.parseDouble(replyPacket[2]));
 			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setAnimation(Byte.parseByte(replyPacket[3]));
+			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setInGrass(Boolean.valueOf(replyPacket[4]));
 			        			//System.out.println("Updating player: " + replyPacket[0] + " XY: " + replyPacket[1] + "," + replyPacket[2] + "," + replyPacket[3]);
 			        		}else{ //Else add a new user in.
 			        			GameConstants.getPlayerList().add(new OtherPlayerEntity(Short.parseShort(replyPacket[0]),
@@ -152,8 +153,9 @@ public class PacketManager {
 					        			(short)35, 
 					        			(byte)0, 
 					        			Byte.parseByte(replyPacket[3]), 
-					        			(short)0, 
 					        			(short)0));
+			        			
+			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setInGrass(Boolean.valueOf(replyPacket[4]));
 					        	//System.out.println("Trying to add players. ID: " + replyPacket[0] + " XY: " + replyPacket[1] + "," + replyPacket[2]);
 			        		}
 			        	}
@@ -266,7 +268,6 @@ public class PacketManager {
 	 * @param packet
 	 */
 	public void sendPacket(String packet){
-		//System.out.println("Packet Size: " + packet.length());
 		if(packet != null){
 			out.println(Encoder.encode(packet));
 			out.flush();
@@ -281,7 +282,8 @@ public class PacketManager {
 				GameConstants.getPlayer().getId() + ":" + 
 				GameConstants.getPlayer().getX() + ":" + 
 				GameConstants.getPlayer().getY() + ":" +
-				GameConstants.getPlayer().getAnimation());
+				GameConstants.getPlayer().getAnimation() + ":" + 
+				GameConstants.getPlayer().isInGrass());
 	}
 	
 }

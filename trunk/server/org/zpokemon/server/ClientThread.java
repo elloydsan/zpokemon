@@ -99,6 +99,7 @@ public class ClientThread extends Thread {
 	                	Constants.getPlayer(Short.parseShort(packet[0])).setX(Double.parseDouble(packet[1]));
 	                	Constants.getPlayer(Short.parseShort(packet[0])).setY(Double.parseDouble(packet[2]));
 	                	Constants.getPlayer(Short.parseShort(packet[0])).setAnimation(Byte.parseByte(packet[3]));
+	                	Constants.getPlayer(Short.parseShort(packet[0])).setInGrass(Boolean.parseBoolean(packet[4]));
 	                	
 	                    /**
 	                     * Notify all client's this player has moved.
@@ -129,7 +130,7 @@ public class ClientThread extends Thread {
                 }
             }
         }catch(IOException e){
-            log("DC client #: " + clientID + " | The user most likley closed the window.");
+            //log("DC client #: " + clientID + " | The user most likley closed the window.");
         }finally{
             try {
                 socket.close();

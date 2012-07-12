@@ -228,7 +228,6 @@ public class TileMap implements Paintable{
 		 */
 		try{
 			
-		
 		for(short a = 0; a < tileRows; a++){
 			for(short b = 0; b < tileCols; b++){
 				if(viewport.contains(new Point((b * tileWidth) + (int)xOffSet, 
@@ -240,7 +239,7 @@ public class TileMap implements Paintable{
 							tileHeight, 
 							null);
 					
-					/*if(layer2[b][a].getImage() > 0){
+					if(layer2[b][a].getImage() > 0){
 						g.drawImage(images[layer2[b][a].getImage()], 
 								(b * tileWidth) + (int)xOffSet, 
 								(a * tileHeight) + (int)yOffSet, 
@@ -256,7 +255,7 @@ public class TileMap implements Paintable{
 								tileWidth, 
 								tileHeight, 
 								null);
-					}*/
+					}
 				}
 			}
 		}

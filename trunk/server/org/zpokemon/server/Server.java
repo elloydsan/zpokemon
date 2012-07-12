@@ -73,7 +73,7 @@ public class Server extends JFrame{
 		this.add(logContainer);
 		this.setVisible(true);
 		
-		//Create a new tilemap.
+		//Create a new tile map.
 		Constants.setTileMap(new TileMap((short)30,(short)20,(short)20,(short)20,(short)280, (short)160));
 		
 		try{

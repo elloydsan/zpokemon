@@ -13,6 +13,7 @@ public class PlayerEntity extends Entity {
 	private int coins;	
 	private boolean onBike;
 	private boolean moving;
+	private boolean inGrass;
 	
 	/**
 	 * Construct a new player.
@@ -59,6 +60,14 @@ public class PlayerEntity extends Entity {
 
 	public void setMoving(boolean moving) {
 		this.moving = moving;
+	}
+
+	public boolean isInGrass() {
+		return inGrass;
+	}
+
+	public void setInGrass(boolean inGrass) {
+		this.inGrass = inGrass;
 	}
 
 }
