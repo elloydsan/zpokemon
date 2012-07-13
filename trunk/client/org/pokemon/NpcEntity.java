@@ -45,7 +45,7 @@ public class NpcEntity extends Entity {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void render(Graphics g) {
 		// TODO Auto-generated method stub
 	}
 }

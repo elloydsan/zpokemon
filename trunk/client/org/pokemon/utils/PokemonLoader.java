@@ -10,13 +10,22 @@ import org.pokemon.PokemonName;
 
 /**
  * 
- * @author Fsig
+ * @author Troy
  * @author NerdyGnome (Re-wrote and edited code)
+ * 
+ * I am not sure if we should just keep all Pokemon in
+ * memory or load and unload them as needed.
+ * 
+ * Pokemon stored in memory size: 7266kb
+ * 
+ * Charmander 4:
+ * Is missing a value, I stuck number 10 in there to test 
+ * memory usage.
  *
  */
 public class PokemonLoader {
 	private static final PokemonLoader instance = new PokemonLoader();
-	private static ArrayList<PokemonEntity> pokemon;
+	private static ArrayList<PokemonEntity> pokemon = new ArrayList<PokemonEntity>();
 	private static String[] splitString;
 	private static BufferedReader input;
 	private static short lineNumber = 0;
@@ -41,17 +50,14 @@ public class PokemonLoader {
 	private static short[] evolveLevels;
 	
 	/**
-	 * Loads all given pokemons into memory
+	 * Loads all given Pokemon's into memory
 	 * 
 	 * @param pokemonId
 	 */
 	public static void load(short[] pokemonId) {
-		
-		pokemon = new ArrayList<PokemonEntity>(pokemonId.length);
 		String line;
 					
 		for(int i = 0 ; i < pokemonId.length ; i++) {
-			
 			short currentPokemon = pokemonId[i];
 			input = new BufferedReader(new InputStreamReader(instance.getClass().getClassLoader().getResourceAsStream("resources\\data\\pokemon\\" + currentPokemon + ".pokemon")));
 
@@ -139,7 +145,10 @@ public class PokemonLoader {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			}		
+			}catch(Exception e){
+				e.printStackTrace();
+				System.out.println(lineNumber);
+			}
 			try {
 				input.close();
 			} catch (IOException e) {
@@ -155,7 +164,7 @@ public class PokemonLoader {
 	
 	
 	/**
-	 * Returns an arraylist with all pokemons that 
+	 * Returns an array list with all Pokemon's that 
 	 * are loaded into the memory.
 	 * 
 	 * @return
@@ -165,14 +174,13 @@ public class PokemonLoader {
 	}
 	
 	/**
-	 * Takes a pokemon id as a parameter and returns
-	 * the pokemon if it exists in the memory.
+	 * Takes a Pokemon id as a parameter and returns
+	 * the Pokemon if it exists in the memory.
 	 * 
 	 * @param pokemonId
 	 * @return
 	 */
 	public static PokemonEntity getPokemon(short pokemonId) {
-
 		for(int i = 0 ; i < pokemon.size() ; i++)
 			if(pokemon.get(i).getId() == pokemonId)
 				return pokemon.get(i);
@@ -182,11 +190,11 @@ public class PokemonLoader {
 	}
 	
 	/**
-	 * Takes a pokemon name as parameter and returns
-	 * the pokemon object if it exists in the memory. 
+	 * Takes a Pokemon name as parameter and returns
+	 * the Pokemon object if it exists in the memory. 
 	 * 
 	 * @param pokemonId
-	 * @return pokemon
+	 * @return Pokemon
 	 */
 	public static PokemonEntity getPokemon(PokemonName name) {
 		int pokemonId = name.getIndex();
@@ -198,4 +206,5 @@ public class PokemonLoader {
 		System.out.println("ERROR: Pokemon with ID (" + pokemonId + ") is not loaded into memory");
 		return null;
 	}
+	
 }

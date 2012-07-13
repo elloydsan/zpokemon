@@ -93,8 +93,12 @@ public class GameFrame extends JFrame implements ComponentListener{
 		 * Just my luck, I write all this bloody code 
 		 * then find out hey... there is a built in method 
 		 * to do that..
+		 * 
+		 * It appears that my code seems to work better...
+		 * This can't be right... but with multiple monitors
+		 * the in built method seems to fail hard core...
 		 */
-		/*if(fullscreen){
+		if(fullscreen){
 			Constants.setWidth(Constants.getScreenWidth());
 			Constants.setHeight(Constants.getScreenHeight());
 			
@@ -122,10 +126,14 @@ public class GameFrame extends JFrame implements ComponentListener{
 			
 			this.setSize(Constants.getPreferedWidth(), Constants.getPreferedHeight());
 			this.setLocationRelativeTo(null);
-		}*/
+		}
 			
 		this.setUndecorated(fullscreen);
-		Constants.getGameCanvas().setFullscreen(this, fullscreen);
+		/**
+		 * Funny enough, my code seems to work better then
+		 * the built in method. How bizzar...
+		 */
+		//Constants.getGameCanvas().setFullscreen(this, fullscreen);
 		this.setVisible(true);
 	}
 

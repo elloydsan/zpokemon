@@ -10,7 +10,7 @@ import org.zengine.Game;
  */
 public class Launcher {
 
-	public Launcher(String gameName){
+	public Launcher(/*String gameName*/){
 		try{
 			// URLClassLoader scriptLoader = new URLClassLoader(new URL[] {new URL("file://" + new File("").getAbsolutePath() + "/") });
 			// final Game game = (Game)scriptLoader.loadClass(gameName).newInstance();
@@ -39,12 +39,12 @@ public class Launcher {
 	}
 	
 	public static void main(String[] args){
-		if(args.length < 1){
+		/*if(args.length < 1){
 			System.out.println("Correct usage: java -jar zgame.jar YourGameClass");
 			System.exit(0);
-		}
+		}*/
 		
-		new Launcher(args[0]);
+		new Launcher(/*args[0]*/);
 	}
 
 }

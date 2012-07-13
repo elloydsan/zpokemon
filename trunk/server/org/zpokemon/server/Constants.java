@@ -22,13 +22,26 @@ public class Constants {
 	
 	public static TileMap tileMap;
 	
+	/**
+	 * This will convert the bytes to a string.
+	 * 
+	 * @param b
+	 * @return String
+	 */
+	public static String bytesToString(byte[] b) {
+	    byte[] b2 = new byte[b.length + 1];
+	    b2[0] = 1;
+	    System.arraycopy(b, 0, b2, 1, b.length);
+	    return new BigInteger(b2).toString(36);
+	}
+	
     /**
      * Convert the string back to bytes.
      * 
      * @param s
      * @return byte[]
      */
-	public byte[] stringToBytes(String s) {
+	public static byte[] stringToBytes(String s) {
 	    byte[] b2 = new BigInteger(s, 36).toByteArray();
 	    return Arrays.copyOfRange(b2, 1, b2.length);
 	}
@@ -40,7 +53,7 @@ public class Constants {
 	 * 
 	 * @return SecretKeySpec
 	 */
-	public SecretKeySpec generateSecretKey(){
+	public static SecretKeySpec generateSecretKey(){
 		try{
 	   	 	KeyGenerator kgen = KeyGenerator.getInstance("AES");
 	        kgen.init(128);

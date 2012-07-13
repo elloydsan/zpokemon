@@ -75,7 +75,7 @@ public class OtherPlayerEntity extends Entity {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void render(Graphics g) {
 		g.setColor(Color.WHITE);
 		g.drawString("Player: " + super.getId(), 
 				(int)super.getX() + (int)GameConstants.getTilemap().getxOffSet() -10, 

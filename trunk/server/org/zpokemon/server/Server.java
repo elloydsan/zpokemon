@@ -20,21 +20,26 @@ import org.zpokemon.TileMap;
  * 
  * @author Troy
  * 
+ * AES encryption implemented.
+ * 
  * TODO
  * Make the server handle all actions like checking if a tile
- * is free etc...
+ * is free etc... 
+ * 
+ * (I'm still not 100% on this, I kind of like the client 
+ * handling it because it's less network resources and much 
+ * quicker... but the down side is it can be hacked.)
  * 
  * TODO
  * Make the server handle chunks of data for clients for example
  * only pass the chunk of the map to the client as needed.
  * 
- * TODO
- * One day down the track, add in some basic AES encryption or
- * such over the packet messages to try and stop anyone sending
- * false packets.
+ * Currently send's the whole map but only non default tiles.
  * 
- * Implemented a keygen and a AES encoder.
- * We wont start using these yet though.
+ * TODO
+ * Add in a mysql database connector.
+ * Use this to do database pooling and save / load information
+ * store in the DB, like users for example.
  *
  */
 public class Server extends JFrame{
@@ -146,7 +151,7 @@ public class Server extends JFrame{
 	 * @param msg
 	 * @param lineColour
 	 */
-	public void log(String msg, Color lineColour){
+	public static void log(String msg, Color lineColour){
 		try{
 			if(log.getText().split("\n").length > 200){
 				log.setText("Amount of lines exceeded 200, cleared and starting fresh." + "\n");
@@ -155,6 +160,7 @@ public class Server extends JFrame{
 			doc.insertString(doc.getLength(), getDate() + ": ", style);
 			StyleConstants.setForeground(style, lineColour);
 			doc.insertString(doc.getLength(), msg + "\n", style);
+			StyleConstants.setForeground(style, Color.WHITE);
 		}catch (BadLocationException e){
 			e.printStackTrace();
 		}

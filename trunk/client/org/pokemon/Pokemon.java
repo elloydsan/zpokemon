@@ -30,9 +30,11 @@ public class Pokemon extends Game{
 
 	public static BufferedImage[] tileTextures;
 	private Point xy = new Point(0,0);
+	
+	private boolean showmem = false;
 
 	@Override
-	public void draw(Graphics g) {
+	public void render(Graphics g) {
 		switch(state){
 		case LOADING:
 			g.setColor(Color.WHITE);
@@ -45,17 +47,17 @@ public class Pokemon extends Game{
 		case CONNECT:
 			break;
 		case PLAYING:
-			GameConstants.getTilemap().draw(g);
-			GameConstants.getPlayer().draw(g);
-			
-			//Chatmenu
-			if(GameConstants.getChat().isChatMenuOpen()) 
-				GameConstants.getChat().draw(g);
+			GameConstants.getTilemap().render(g);
+			GameConstants.getPlayer().render(g);
 			
 			//Multiplayer
 			if(GameConstants.getPlayerList() != null)
 			for(OtherPlayerEntity p : GameConstants.getPlayerList())
-				p.draw(g);
+				p.render(g);
+			
+			//Chatmenu
+			if(GameConstants.getChat().isChatMenuOpen()) 
+				GameConstants.getChat().render(g);
 			break;
 		case PAUSED:
 			break;
@@ -70,6 +72,14 @@ public class Pokemon extends Game{
 				g.setColor(Color.WHITE);
 				g.drawString("FPS: " + Constants.getRender().getFps(), 10, 20);
 				g.drawString("Mouse XY: " + xy.x + "," + xy.y, 10, 35);
+			}
+			
+			if(showmem){
+				g.setColor(Color.YELLOW);
+				g.drawString("Total Memory: " + Constants.formatBytes(Constants.getRunTime().totalMemory()), Constants.getWidth() - 200, 20);
+				g.drawString("Free Memory: " + Constants.formatBytes(Constants.getRunTime().freeMemory()), Constants.getWidth() - 200, 35);
+				g.drawString("Used Memory: " + Constants.formatBytes((Constants.getRunTime().totalMemory() - Constants.getRunTime().freeMemory())), 
+						Constants.getWidth() - 200, 50);
 			}
 			
 			/**
@@ -91,7 +101,6 @@ public class Pokemon extends Game{
 		GameConstants.setPlayerImages(ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
 		
 		new GameFrame("Pokemon",this);
-		Constants.getGameFrame().setResizable(true);
 		Constants.getGameFrame().consumeMouse(true);
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
 		GameConstants.setPlayer(new PlayerEntity((short)280, (short)160, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0));
@@ -103,7 +112,7 @@ public class Pokemon extends Game{
 		System.out.println("Starting game.");
 		if(GameConstants.isMultiplayer()){
 			GameConstants.setPacketManager(new PacketManager("127.0.0.1",5632));
-			//GameConstants.setPacketManager(new PacketManager("118.208.150.20",5632));
+			//GameConstants.setPacketManager(new PacketManager("118.208.29.29",5632));
 		}else{
 			GameConstants.setTilemap(new TileMap((short)30,(short)20,(short)20,(short)20,tileTextures));
 		}
@@ -239,9 +248,15 @@ public class Pokemon extends Game{
 			if(GameConstants.getChat().isChatMenuOpen()) { 
 				GameConstants.getChat().setChatMenuOpen(false);			
 				GameConstants.getChat().setChatString("");
-			}else {
+			}else{
 				GameConstants.getChat().setChatMenuOpen(true);				
 			}
+			break;
+		case KeyEvent.VK_PAGE_UP: //Show mem stats
+			if(showmem)
+				showmem = false;
+			else
+				showmem = true;
 			break;
 		}
 		
@@ -251,6 +266,8 @@ public class Pokemon extends Game{
 		if(GameConstants.getChat().isChatMenuOpen()){
 			GameConstants.getChat().sendMessage(e);
 		}
+		
+		forwardEvents(null,e);
 	}
 
 	/**
@@ -272,29 +289,77 @@ public class Pokemon extends Game{
 			right = false;
 			break;
 		}
+		
+		forwardEvents(null,e);
 	}
 	
-	/**
-	 * Key typed
-	 */
 	@Override
-	public void keyTyped(KeyEvent e) {}
+	public void keyTyped(KeyEvent e) {
+		forwardEvents(null,e);
+	}
 
-	/**
-	 * These event's will most likely be forwarded
-	 * onto another class to deal with them appropriately.
-	 */
-	
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		xy = new Point(e.getX(),e.getY());
+		forwardEvents(e,null);
 	}
 	
-	public void mouseClicked(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-	public void mouseExited(MouseEvent e) {}
-	public void mousePressed(MouseEvent e) {}
-	public void mouseReleased(MouseEvent e) {}
-	public void mouseDragged(MouseEvent e) {}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		forwardEvents(e,null);
+	}
+	
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		forwardEvents(e,null);
+	}
+	
+	@Override
+	public void mouseExited(MouseEvent e) {
+		forwardEvents(e,null);
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		forwardEvents(e,null);
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		forwardEvents(e,null);
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		forwardEvents(e,null);
+	}
 
+	/**
+	 * This will forward on event's to the appropriate
+	 * interfaces and such.
+	 * 
+	 * @param me
+	 * @param ke
+	 */
+	public void forwardEvents(MouseEvent me, KeyEvent ke){
+		switch(state){
+		case LOADING:
+			break;
+		case INITIALISED:
+			break;
+		case MULTIPLAYER:
+			break;
+		case CONNECT:
+			break;
+		case PLAYING:
+			break;
+		case PAUSED:
+			break;
+		case BATTLE:	
+			break;
+		case DESTROYED:
+			break;
+		}
+	}
+	
 }
