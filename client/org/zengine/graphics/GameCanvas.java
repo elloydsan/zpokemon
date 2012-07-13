@@ -69,7 +69,7 @@ public class GameCanvas extends Canvas{
 				Constants.getHeight() +100);
 		 
 		//Draw the game's graphics.
-		Constants.getGame().draw(g);
+		Constants.getGame().render(g);
 		 
 		//Dispose of the graphics.
 		g.dispose();

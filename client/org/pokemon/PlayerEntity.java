@@ -367,7 +367,7 @@ public class PlayerEntity extends Entity {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void render(Graphics g) {
 		//On resize update player position.
 		if(this.drawX != ((Constants.getWidth()/2) -30)){
 			this.drawX = (short) ((Constants.getWidth()/2) -30);

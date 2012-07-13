@@ -1,7 +1,9 @@
 package org.pokemon;
 
 import java.awt.image.BufferedImage;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.zengine.networking.PacketManager;
 
@@ -15,14 +17,38 @@ public class GameConstants {
 	private static PlayerEntity player;
 	private static BufferedImage[] playerImages;
 	
-	// Chat
+	//Chat
 	private static Chatbox chat;
 	
 	//Networking
 	private static boolean multiplayer = true;
 	private static PacketManager packetManager;
 	private static ArrayList<OtherPlayerEntity> playerList = new ArrayList<OtherPlayerEntity>();
-
+	
+	/**
+	 * This will convert the bytes to a string.
+	 * 
+	 * @param b
+	 * @return String
+	 */
+	public static String bytesToString(byte[] b) {
+	    byte[] b2 = new byte[b.length + 1];
+	    b2[0] = 1;
+	    System.arraycopy(b, 0, b2, 1, b.length);
+	    return new BigInteger(b2).toString(36);
+	}
+	
+    /**
+     * Convert the string back to bytes.
+     * 
+     * @param s
+     * @return byte[]
+     */
+	public static byte[] stringToBytes(String s) {
+	    byte[] b2 = new BigInteger(s, 36).toByteArray();
+	    return Arrays.copyOfRange(b2, 1, b2.length);
+	}
+	
 	public static TileMap getTilemap() {
 		return tilemap;
 	}
@@ -66,9 +92,10 @@ public class GameConstants {
 		if(x < 0 || x >= tilemap.getTileCols()) return false;
 		if(y < 0 || y >= tilemap.getTileRows()) return false;
 		
-		if(tilemap.getLayer2()[x][y].getImage() == 15)
+		//Check if the tile is grass.
+		if(tilemap.getLayer2()[x][y].getImage() == 15 && !player.isInGrass())
 			player.setInGrass(true);
-		else
+		else if(tilemap.getLayer2()[x][y].getImage() != 15)
 			player.setInGrass(false);
 		
 		

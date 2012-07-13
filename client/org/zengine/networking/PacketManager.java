@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import org.pokemon.GameConstants;
 import org.pokemon.OtherPlayerEntity;
 import org.pokemon.Pokemon;
@@ -31,6 +33,8 @@ import org.pokemon.TileMap;
  * If you have a packet that is sent over and over
  * it may be best to create a method in here to send
  * the packet for you.
+ * 
+ * AES encryption implemented.
  *
  */
 public class PacketManager {
@@ -42,6 +46,9 @@ public class PacketManager {
     private String fromServer;
     private String[] header;
     private String[] replyPacket;
+    private boolean loggedin;
+    private AESEncoder encoder;
+    private SecretKeySpec key;
 	
 	private int port;
 	private InetAddress ipAddress;
@@ -55,6 +62,7 @@ public class PacketManager {
 	 */
 	public PacketManager(String ipAddress, int port){
 		this.port = port;
+		this.loggedin = false;
 		
 		try {
 			this.ipAddress = InetAddress.getByName(ipAddress);
@@ -69,19 +77,10 @@ public class PacketManager {
 	        out = new PrintWriter(socket.getOutputStream(), true);
 	        
 	        //Login packet.
-	        sendPacket(PacketHeaders.LOGIN.getHeader() + 
+	        sendRawPacket(PacketHeaders.LOGIN.getHeader() + 
 	        		GameConstants.getPlayer().getX() + ":" + 
 	        		GameConstants.getPlayer().getY());
-	        
-	        //Download map.
-	        sendPacket(PacketHeaders.MAP_CREATE.getHeader() + ":");
-	        
-	        //Fill map.
-	        sendPacket(PacketHeaders.MAP_CHUNK.getHeader() + ":");
-	        
-	        //Get player list
-	        sendPacket(PacketHeaders.PLAYER_LIST.getHeader() + ":");
-	        
+
 	        //Start a new listener.
 	        listener = new Thread(){
 	        	@Override
@@ -118,8 +117,15 @@ public class PacketManager {
 	private void listen(){
 		try{
 			while((fromServer = in.readLine()) != null){
-				fromServer = Encoder.decode(fromServer);
-				
+				/**
+				 * If we are logged in the packet's will be encrypted.
+				 * This will decrypt the packet before we process it.
+				 */
+				if(loggedin)
+					fromServer = encoder.decrypt(fromServer);
+				else
+					fromServer = Encoder.decode(fromServer);
+
 				if(fromServer != null && fromServer.contains("~")){
 					header = fromServer.split("~");
 					if(header[1].contains(":"))
@@ -132,7 +138,28 @@ public class PacketManager {
 			         */
 			        switch(Integer.parseInt(header[0])){
 			        case 0: //Login
-				        GameConstants.getPlayer().setId(Short.parseShort(header[1]));
+			        	/**
+			        	 * This will set the user's ID, key 
+			        	 * and also set the login flag to true.
+			        	 * 
+			        	 * Without this key the client can't interact
+			        	 * with the server. The server will assume the
+			        	 * client is sending junk / trying to cheat and 
+			        	 * disconnect the socket.
+			        	 */
+				        GameConstants.getPlayer().setId(Short.parseShort(replyPacket[0]));
+				        this.key = new SecretKeySpec(GameConstants.stringToBytes(replyPacket[1]),"AES");
+				        this.encoder = new AESEncoder(key);
+				        this.loggedin = true;
+				        
+				        //Download map.
+				        sendPacket(PacketHeaders.MAP_CREATE.getHeader() + ":");
+				        
+				        //Fill map.
+				        sendPacket(PacketHeaders.MAP_CHUNK.getHeader() + ":");
+				        
+				        //Get player list
+				        sendPacket(PacketHeaders.PLAYER_LIST.getHeader() + ":");
 			        	break;
 			        case 1: //Get player list
 			        	if(Short.parseShort(replyPacket[0]) != GameConstants.getPlayer().getId()){
@@ -267,9 +294,21 @@ public class PacketManager {
 	 * 
 	 * @param packet
 	 */
-	public void sendPacket(String packet){
+	public void sendRawPacket(String packet){
 		if(packet != null){
 			out.println(Encoder.encode(packet));
+			out.flush();
+		}
+	}
+	
+	/**
+	 * Send a packet to the server.
+	 * 
+	 * @param packet
+	 */
+	public void sendPacket(String packet){
+		if(packet != null){
+			out.println(encoder.encrypt(packet));
 			out.flush();
 		}
 	}

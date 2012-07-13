@@ -1,5 +1,7 @@
 package org.zengine;
 
+import java.text.DecimalFormat;
+
 import org.zengine.graphics.GameCanvas;
 import org.zengine.graphics.Render;
 
@@ -10,6 +12,7 @@ import org.zengine.graphics.Render;
  *
  */
 public class Constants {
+	private static Runtime runTime = Runtime.getRuntime();
 	private static Game game;
 	
 	private static int width = 800;
@@ -31,6 +34,28 @@ public class Constants {
 	private static boolean fullscreen = false;
 	
 	
+	public static Runtime getRunTime() {
+		return runTime;
+	}
+
+	public static void setRunTime(Runtime runTime) {
+		Constants.runTime = runTime;
+	}
+	
+	public static String formatBytes(long value){
+		String result = Double.toString((int)value);
+    	DecimalFormat shrinkBytes = new DecimalFormat("#.####");
+
+    	if(value > 0 && value < 1048576){
+    		result = shrinkBytes.format((double)(value / (double)1024)) + " KB";
+    	}else if(value > 1048576 && value < 1073741824){
+    		result = shrinkBytes.format((double)(value / (double)1048576)) + " MB";
+    	}else if(value > 1073741824){
+    		result = shrinkBytes.format((double)(value / (double)1073741824)) + " GB";
+    	}
+    	return result;
+	}
+
 	public static Game getGame() {
 		return game;
 	}

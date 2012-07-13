@@ -21,7 +21,7 @@ public class Encoder {
 	 * @return String
 	 */
 	public static String encode(String packet){
-		return new BASE64Encoder().encode(packet.getBytes()).replace("\r\n", "");
+		return new BASE64Encoder().encode(packet.getBytes()).replaceAll("\r\n", "");
 	}
 	
 	/**

@@ -42,7 +42,7 @@ public class TileMap implements Paintable{
 	 * Create a new TileMap.
 	 * 
 	 * The TileMap class currently supports 3 layers.
-	 * These layers are generaly as follows:
+	 * These layers are generally as follows:
 	 * 1: Background / base tiles.
 	 * 2: Overlay tiles to blend tiles together.
 	 * 3: Objects.
@@ -59,8 +59,8 @@ public class TileMap implements Paintable{
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		this.images = images;
-		this.xOffSet = 200;
-		this.yOffSet = 200;
+		this.xOffSet = 100;
+		this.yOffSet = 100;
 		
 		tileCount = (short) (tileCols * tileRows);
 		layer1 = new Tile[tileCols][tileRows];
@@ -211,7 +211,7 @@ public class TileMap implements Paintable{
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void render(Graphics g) {
 		if(Constants.getWidth() > viewport.getWidth()){
 			viewport = new Rectangle(-(this.tileWidth * 3), 
 					-(this.tileHeight * 3), 

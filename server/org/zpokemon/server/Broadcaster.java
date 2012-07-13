@@ -13,11 +13,25 @@ public class Broadcaster {
 	
 	/**
 	 * Send a packet to all clients.
+	 * 
+	 * @param packet
 	 */
 	public static void broadcast(String packet){
-		for(ClientThread pt : Constants.getClients()){
+		for(ClientThread pt : Constants.getClients())
 			pt.sendPacket(packet);
-		}
+	}
+	
+	/**
+	 * Send a packet to all clients except
+	 * the specified ID.
+	 * 
+	 * @param packet
+	 * @param id
+	 */
+	public static void broadcastExcept(String packet, int id){
+		for(ClientThread pt : Constants.getClients())
+			if(pt.clientID != id)
+				pt.sendPacket(packet);
 	}
 	
 	/**

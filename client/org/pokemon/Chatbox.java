@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import org.zengine.Constants;
 import org.zengine.graphics.Paintable;
 import org.zengine.networking.PacketHeaders;
 import org.zengine.uils.ImageUtils;
@@ -17,17 +18,10 @@ import org.zengine.uils.StringUtils;
  * Functionality will be added to allow developers to test certain commands. 
  * For example sending packets, initiating Pokemon fights etc...
  * 
+ * @author NerdyGnome, Troy
+ * 
  * TODO
- * Clean up the chat log so it contains only the last 8 messages 	- Troy: Done
- * Make the chat box more transparent								- Troy: Done
- * Figure out a place where to put the chat box 					- Troy: Done
- * Enable remove characters with backspace							- Troy: Done
- * Disable characters that we do not want.						 	- Troy: Done
- * Take a closer look at the maximum character system				- Troy: Done
- * 
- * @author NerdyGnome
- * 
- * Edited by Troy.
+ * Add commands.
  *
  */
 public class Chatbox implements Paintable{
@@ -41,27 +35,33 @@ public class Chatbox implements Paintable{
 	private byte CURRENT_CHARACTERS = 0;
 	
 	private boolean isChatMenuOpen;
-	private BufferedImage chatMenuImage;
+	private BufferedImage chatmenu_left;
+	private BufferedImage chatmenu_middle;
+	private BufferedImage chatmenu_right;
 	
 	private String chatString = "";
 	private String chatlog = "";
 	private String[] line;
 	
+	private int greaterThen;
+	private int lessThen;
+	private int y;
+	
 	public Chatbox() {
 		isChatMenuOpen = false;
-		chatMenuImage = ImageUtils.loadTranslucentImage("resources/sprites/interfaces/devScreen.gif", 0.50f);
+		chatmenu_left = ImageUtils.loadTranslucentImage("resources/sprites/interfaces/chatmenu_left.gif", 0.50f);
+		chatmenu_middle = ImageUtils.loadTranslucentImage("resources/sprites/interfaces/chatmenu_middle.gif", 0.50f);
+		chatmenu_right = ImageUtils.loadTranslucentImage("resources/sprites/interfaces/chatmenu_right.gif", 0.50f);
 		
 		disallowedCharacters.add(KeyEvent.VK_ENTER);
 		disallowedCharacters.add(KeyEvent.VK_PAGE_DOWN);
 		disallowedCharacters.add(KeyEvent.VK_SHIFT);
 		disallowedCharacters.add(KeyEvent.VK_BACK_SPACE);
+		disallowedCharacters.add(KeyEvent.VK_ESCAPE);
 	}
 	
 	/**
-	 * Implement this later to make it easier for the user. 
-	 * This way you will only have to write sendMessage("hello");
-	 * 
-	 * Troy: Done.
+	 * Send a message.
 	 */
 	public void sendMessage(KeyEvent e) {
 		//Backspace characters.
@@ -70,12 +70,12 @@ public class Chatbox implements Paintable{
 		}
 		
 		// We don't want to write stuff for these buttons
-		if(!disallowedCharacters.contains(e.getKeyCode()) && CURRENT_CHARACTERS < MAXIUM_CHARACTERS) {
+		if(e.getKeyChar() != KeyEvent.CHAR_UNDEFINED && !disallowedCharacters.contains(e.getKeyCode()) && CURRENT_CHARACTERS < MAXIUM_CHARACTERS) {
 			appendChatString(String.valueOf(e.getKeyChar()));
 		}
 		
 		//This will send the whole string to the server.
-		if(e.getKeyCode() == KeyEvent.VK_ENTER){
+		if(e.getKeyCode() == KeyEvent.VK_ENTER && chatString.length() > 0){
 			setChatlog(chatlog + GameConstants.getPlayer().getId() + " - " + chatString + "~");
 			
 			//Check for multiplayer here
@@ -109,14 +109,6 @@ public class Chatbox implements Paintable{
 		this.isChatMenuOpen = isChatMenuOpen;
 	}
 
-	public BufferedImage getChatMenuImage() {
-		return chatMenuImage;
-	}
-
-	public void setChatMenuImage(BufferedImage chatMenuImage) {
-		this.chatMenuImage = chatMenuImage;
-	}
-
 	public String getChatString() {
 		return chatString;
 	}
@@ -140,19 +132,20 @@ public class Chatbox implements Paintable{
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void render(Graphics g) {	
 		/**
-		 * This is silly because it will reload every time a draw is called
-		 * which happens to be about 30 times per second.
+		 * The menu will now auto fill the whole screen width.
 		 */
-		//InterfaceLoader.load(new byte[]{0});
-		//chatMenuImage = InterfaceLoader.getInterfaceImages().get(0);
+		g.drawImage(chatmenu_left, 0, 0, chatmenu_left.getWidth(), chatmenu_left.getHeight(), null);
+		if(!Constants.isFullscreen()){
+			g.drawImage(chatmenu_middle, chatmenu_left.getWidth(), 0, Constants.getWidth() - 37, chatmenu_middle.getHeight(), null);
+			g.drawImage(chatmenu_right, Constants.getWidth() -17, 0, chatmenu_right.getWidth(), chatmenu_right.getHeight(), null);
+		}else{
+			g.drawImage(chatmenu_middle, chatmenu_left.getWidth(), 0, Constants.getWidth() - 21, chatmenu_middle.getHeight(), null);
+			g.drawImage(chatmenu_right, Constants.getWidth() -1, 0, chatmenu_right.getWidth(), chatmenu_right.getHeight(), null);
+		}
 		
-		/**
-		 * Paints the menu and text. Make sure to make it more flexible, so when
-		 * the window size is changed, the position of the chatmenu is also changed.
-		 */
-		g.drawImage(chatMenuImage, 0, 0, null);
+		//Draw the string
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Arial", Font.PLAIN, 12));
 		g.drawString(chatString, 15, 145);
@@ -160,9 +153,9 @@ public class Chatbox implements Paintable{
 		// Split the chat log into messages
 		line = chatlog.split("~");	
 		
-		int greaterThen = line.length -9 + chatSelectedIndex;
-		int lessThen = line.length - chatSelectedIndex;
-		int y = CHAT_MENU_TOP;
+		greaterThen = line.length -9 + chatSelectedIndex;
+		lessThen = line.length - chatSelectedIndex;
+		y = CHAT_MENU_TOP;
 		
 		/**
 		 * This will clear out old unseen logs.
@@ -178,8 +171,8 @@ public class Chatbox implements Paintable{
 		/**
 		 * Only show last 8 lines.
 		 */
-		for(int i = 0 ; i < line.length ; i++) 
-			if(i > greaterThen && i < lessThen) 
+		for(int i = 0 ; i < line.length ; i++)
+			if(i > greaterThen && i < lessThen)
 				g.drawString(line[i], 10, y += 15);
 	}
 
