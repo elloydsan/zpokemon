@@ -97,6 +97,22 @@ public class ImageUtils {
         g.dispose();    
         return aimg;  
     }
+    
+    /**
+     * Change a image with a certain transparency.
+     * 
+     * @param url
+     * @param transperancy
+     * @return BufferedImage
+     */
+    public static BufferedImage changeTranslucentImage(BufferedImage img, float transperancy) {     
+        BufferedImage aimg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TRANSLUCENT);  
+        Graphics2D g = aimg.createGraphics();   
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transperancy));   
+        g.drawImage(img, null, 0, 0);   
+        g.dispose();    
+        return aimg;  
+    }
 	
 	/**
 	 * Flips a given image horizontally.

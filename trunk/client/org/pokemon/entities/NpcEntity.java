@@ -1,6 +1,7 @@
-package org.pokemon;
+package org.pokemon.entities;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 
 /**
  * 
@@ -45,7 +46,7 @@ public class NpcEntity extends Entity {
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		// TODO Auto-generated method stub
 	}
 }

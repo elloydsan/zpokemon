@@ -10,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.zpokemon.PlayerEntity;
 import org.zpokemon.TileMap;
+import org.zpokemon.server.utils.Timer;
 
 /**
  * 
@@ -21,6 +22,16 @@ public class Constants {
 	private static ArrayList<PlayerEntity> playerList = new ArrayList<PlayerEntity>();
 	
 	public static TileMap tileMap;
+	
+	//Time variables
+	private static Timer fulldayTimer = new Timer(2400000); //Currently set at 		40 minutes.
+	private static Timer fullnightTimer = new Timer(300000); //Currently set at 	10 minutes.
+	private static Timer transitionTimer = new Timer(300000); //Currently set at 	5 minutes.
+	private static Timer changeTransitionTimer = new Timer(100); //Currently at 	5 seconds.
+	
+	private static float transition;
+	private static double sunmoonY;
+	private static boolean night;
 	
 	/**
 	 * This will convert the bytes to a string.
@@ -116,6 +127,62 @@ public class Constants {
 
 	public static void setTileMap(TileMap tileMap) {
 		Constants.tileMap = tileMap;
+	}
+
+	public static Timer getFulldayTimer() {
+		return fulldayTimer;
+	}
+
+	public static Timer getFullnightTimer() {
+		return fullnightTimer;
+	}
+
+	public static Timer getTransitionTimer() {
+		return transitionTimer;
+	}
+
+	public static Timer getChangeTransitionTimer() {
+		return changeTransitionTimer;
+	}
+
+	public static float getTransition() {
+		return transition;
+	}
+
+	public static boolean isNight() {
+		return night;
+	}
+
+	public static void setFulldayTimer(Timer fulldayTimer) {
+		Constants.fulldayTimer = fulldayTimer;
+	}
+
+	public static void setFullnightTimer(Timer fullnightTimer) {
+		Constants.fullnightTimer = fullnightTimer;
+	}
+
+	public static void setTransitionTimer(Timer transitionTimer) {
+		Constants.transitionTimer = transitionTimer;
+	}
+
+	public static void setChangeTransitionTimer(Timer changeTransitionTimer) {
+		Constants.changeTransitionTimer = changeTransitionTimer;
+	}
+
+	public static void setTransition(float transition) {
+		Constants.transition = transition;
+	}
+
+	public static void setNight(boolean night) {
+		Constants.night = night;
+	}
+
+	public static double getSunmoonY() {
+		return sunmoonY;
+	}
+
+	public static void setSunmoonY(double sunmoonY) {
+		Constants.sunmoonY = sunmoonY;
 	}
 
 }

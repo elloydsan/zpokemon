@@ -1,4 +1,4 @@
-package org.pokemon;
+package org.pokemon.interfaces;
 
 import org.zengine.graphics.Paintable;
 
@@ -28,6 +28,7 @@ public abstract class Interface implements Paintable {
 	public Interface(short x, short y, short width, short height){
 		this.x = x;
 		this.y = y;
+		this.width = width;
 		this.height = height;
 		this.active = false;
 	}

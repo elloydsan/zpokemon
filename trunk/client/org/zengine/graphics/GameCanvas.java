@@ -2,9 +2,10 @@ package org.zengine.graphics;
 
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.image.BufferStrategy;
@@ -22,6 +23,7 @@ public class GameCanvas extends Canvas{
 	private GraphicsDevice graphicsDevice;
 	private GraphicsEnvironment graphicsEnviroment;
 	private BufferStrategy buffer;
+	private Rectangle clip = new Rectangle(-100, -100, Constants.getWidth() +100, Constants.getHeight() +100);
 	
 	public GameCanvas(){
 		super();
@@ -37,12 +39,12 @@ public class GameCanvas extends Canvas{
 	 * Initialise variables.
 	 */
 	public void init(){
-		this.graphicsEnviroment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		this.graphicsDevice = graphicsEnviroment.getDefaultScreenDevice();
+		graphicsEnviroment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		graphicsDevice = graphicsEnviroment.getDefaultScreenDevice();
 		
-		this.setSize(Constants.getWidth(), Constants.getHeight());
-		this.createBufferStrategy(2);
-		this.buffer = getBufferStrategy();
+		setSize(Constants.getWidth(), Constants.getHeight());
+		createBufferStrategy(2);
+		buffer = getBufferStrategy();
 	}
 	
 	/**
@@ -52,7 +54,14 @@ public class GameCanvas extends Canvas{
 	 * @param backBuffer
 	 */
 	public void draw(){	
-		Graphics g = buffer.getDrawGraphics();  
+		Graphics2D g = (Graphics2D) buffer.getDrawGraphics();  
+		/**
+		 * Turn antialias on to smooth out ruff edges.
+		 * 
+		 * Actually, that looks shit...
+		 */
+		//g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		g.clearRect(0, 0, getWidth(), getHeight());
 		
 		/**
@@ -63,10 +72,7 @@ public class GameCanvas extends Canvas{
 		 * familiar with the buffer strategy, it seems
 		 * like this may save resource 
 		 */
-		g.setClip(-100, 
-				-100, 
-				Constants.getWidth() +100, 
-				Constants.getHeight() +100);
+		g.setClip(clip);
 		 
 		//Draw the game's graphics.
 		Constants.getGame().render(g);
@@ -96,6 +102,14 @@ public class GameCanvas extends Canvas{
 				w.dispose();
 			this.graphicsDevice.setFullScreenWindow(null);
 		}
+	}
+
+	public Rectangle getClip() {
+		return clip;
+	}
+
+	public void setClip(Rectangle clip) {
+		this.clip = clip;
 	}
 
 }

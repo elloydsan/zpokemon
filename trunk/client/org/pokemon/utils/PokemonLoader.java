@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import org.pokemon.PokemonEntity;
-import org.pokemon.PokemonName;
+import org.pokemon.entities.PokemonEntity;
 
 /**
  * 

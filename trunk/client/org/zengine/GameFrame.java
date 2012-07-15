@@ -5,6 +5,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -101,6 +102,7 @@ public class GameFrame extends JFrame implements ComponentListener{
 		if(fullscreen){
 			Constants.setWidth(Constants.getScreenWidth());
 			Constants.setHeight(Constants.getScreenHeight());
+			Constants.getGameCanvas().setClip(new Rectangle(-100, -100, Constants.getWidth() +100, Constants.getHeight() +100));
 			
 			if(GameConstants.getTilemap() != null){
 				GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + 
@@ -109,12 +111,20 @@ public class GameFrame extends JFrame implements ComponentListener{
 				GameConstants.getTilemap().setyOffSet((double)GameConstants.getTilemap().getyOffSet() + 
 						(((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5));
 			}
+			
+			if(GameConstants.getMinimap() != null){
+				GameConstants.getMinimap().setxOffSet(GameConstants.getMinimap().getxOffSet() + 
+						((((double)Constants.getWidth() - (double)Constants.getOldWidth()) * (double)0.5) /GameConstants.getMinimap().getScale()));
+				GameConstants.getMinimap().setyOffSet(GameConstants.getMinimap().getyOffSet() + 
+						((((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5) /GameConstants.getMinimap().getScale()));
+			}
 					
 			this.setSize(Constants.getScreenWidth(), Constants.getScreenHeight());
 			this.setLocation(0, 0);
 		}else{
 			Constants.setWidth(Constants.getPreferedWidth());
 			Constants.setHeight(Constants.getPreferedHeight());
+			Constants.getGameCanvas().setClip(new Rectangle(-100, -100, Constants.getWidth() +100, Constants.getHeight() +100));
 			
 			if(GameConstants.getTilemap() != null){
 				GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + 
@@ -122,6 +132,13 @@ public class GameFrame extends JFrame implements ComponentListener{
 				
 				GameConstants.getTilemap().setyOffSet((double)GameConstants.getTilemap().getyOffSet() + 
 						(((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5));
+			}
+			
+			if(GameConstants.getMinimap() != null){
+				GameConstants.getMinimap().setxOffSet(GameConstants.getMinimap().getxOffSet() + 
+						((((double)Constants.getWidth() - (double)Constants.getOldWidth()) * (double)0.5) /GameConstants.getMinimap().getScale()));
+				GameConstants.getMinimap().setyOffSet(GameConstants.getMinimap().getyOffSet() + 
+						((((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5) /GameConstants.getMinimap().getScale()));
 			}
 			
 			this.setSize(Constants.getPreferedWidth(), Constants.getPreferedHeight());
@@ -149,6 +166,7 @@ public class GameFrame extends JFrame implements ComponentListener{
 		
 		Constants.setWidth(getWidth());
 		Constants.setHeight(getHeight());
+		Constants.getGameCanvas().setClip(new Rectangle(-100, -100, Constants.getWidth() +100, Constants.getHeight() +100));
 		
 		if(GameConstants.getTilemap() != null){
 			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + 
@@ -156,6 +174,13 @@ public class GameFrame extends JFrame implements ComponentListener{
 			
 			GameConstants.getTilemap().setyOffSet((double)GameConstants.getTilemap().getyOffSet() + 
 					(((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5));
+		}
+		
+		if(GameConstants.getMinimap() != null){
+			GameConstants.getMinimap().setxOffSet(GameConstants.getMinimap().getxOffSet() + 
+					((((double)Constants.getWidth() - (double)Constants.getOldWidth()) * (double)0.5) /GameConstants.getMinimap().getScale()));
+			GameConstants.getMinimap().setyOffSet(GameConstants.getMinimap().getyOffSet() + 
+					((((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5) /GameConstants.getMinimap().getScale()));
 		}
 		
 		Constants.getGameCanvas().setSize(getWidth(), getHeight());

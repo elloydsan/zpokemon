@@ -1,8 +1,9 @@
-package org.pokemon;
+package org.pokemon.entities;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
+import org.pokemon.GameConstants;
 import org.zengine.Constants;
 
 
@@ -367,7 +368,7 @@ public class PlayerEntity extends Entity {
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		//On resize update player position.
 		if(this.drawX != ((Constants.getWidth()/2) -30)){
 			this.drawX = (short) ((Constants.getWidth()/2) -30);

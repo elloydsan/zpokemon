@@ -96,11 +96,27 @@ public class ClientThread extends Thread {
 	                     */
 	                    Broadcaster.broadcastExcept(Packets.playerUpdate((short)clientID),clientID);
 	                	break;
-	                case 1: //Get Player list
+	                case 1: //Server time
+	                	/**
+	                	 * We pass the current time settings to the
+	                	 * client and then the client manages the
+	                	 * time from then after.
+	                	 */
+	                	sendPacket(Packets.serverTime());
+	                	break;
+	                case 2: //Create map.
+	                	sendPacket(Packets.mapCreate());
+	                	break;
+	                case 3: //Download map chunks.
+	                	sendPacket(Packets.mapChunkLayer1());
+	                	sendPacket(Packets.mapChunkLayer2());
+	                	sendPacket(Packets.mapChunkLayer3());
+	                	break;
+	                case 4: //Get Player list
 	                	for(PlayerEntity p : Constants.getPlayerList())
 	            			sendPacket(Packets.playerUpdate(p.getId()));
 	                	break;
-	                case 2: //Player moves
+	                case 5: //Player moves
 	                	/**
 	                	 * Return TOK if the tile they are trying to move to is 
 	                	 * free otherwise return 1 which is false.
@@ -120,18 +136,10 @@ public class ClientThread extends Thread {
 	                     */
 	                    Broadcaster.broadcastExcept(Packets.playerUpdate((short)clientID),clientID);
 	                	break;
-	                case 3: //Player disconnect.
+	                case 6: //Player disconnect.
 	                	// TODO safe disconnect a user.
 	                	break;
-	                case 4: //Create map.
-	                	sendPacket(Packets.mapCreate());
-	                	break;
-	                case 5: //Download map chunks.
-	                	sendPacket(Packets.mapChunkLayer1());
-	                	sendPacket(Packets.mapChunkLayer2());
-	                	sendPacket(Packets.mapChunkLayer3());
-	                	break;
-	                case 6: //Chat
+	                case 7: //Chat
 	                	if(packet.length > 1)
 	                	Broadcaster.broadcastExcept(PacketHeaders.PLAYER_SEND_MESSAGE.getHeader() + 
 	                			packet[0] + ":" + 

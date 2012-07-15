@@ -1,13 +1,16 @@
 package org.pokemon;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import org.pokemon.entities.OtherPlayerEntity;
+import org.pokemon.entities.PlayerEntity;
+import org.pokemon.interfaces.MinimapInterface;
 import org.zengine.Constants;
 import org.zengine.Game;
 import org.zengine.GameFrame;
@@ -17,6 +20,10 @@ import org.zengine.uils.ImageUtils;
 /**
  * 
  * @author Troy
+ * 
+ * TODO 
+ * Get the current date / time
+ * Make night / day transition
  *
  */
 public class Pokemon extends Game{
@@ -24,17 +31,18 @@ public class Pokemon extends Game{
 	private final long UPDATE_PERIOD = 1000L / UPDATE_RATE;
 	public static long beginTime, timeTaken, timeLeft, lastLoopTime, delta;
 	
-	public GameStates state = GameStates.LOADING;
+	public static GameStates state = GameStates.LOADING;
 	
-	public static boolean left,right,up,down;
+	public static boolean left,right,up,down,showmem,night,menu;
 
 	public static BufferedImage[] tileTextures;
 	private Point xy = new Point(0,0);
 	
-	private boolean showmem = false;
+	public static BufferedImage filter;
+	public static BufferedImage filterEffect;
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		switch(state){
 		case LOADING:
 			g.setColor(Color.WHITE);
@@ -47,15 +55,42 @@ public class Pokemon extends Game{
 		case CONNECT:
 			break;
 		case PLAYING:
+			/**
+			 * Tilemap
+			 */
 			GameConstants.getTilemap().render(g);
+			
+			/**
+			 * Player
+			 */
 			GameConstants.getPlayer().render(g);
 			
-			//Multiplayer
-			if(GameConstants.getPlayerList() != null)
-			for(OtherPlayerEntity p : GameConstants.getPlayerList())
-				p.render(g);
+			/**
+			 * Multiplayer
+			 */
+			if(GameConstants.isMultiplayer()){
+				if(GameConstants.getPlayerList() != null)
+				for(OtherPlayerEntity p : GameConstants.getPlayerList())
+					p.render(g);
+			}
 			
-			//Chatmenu
+			/**
+			 * This apply's night / day transitions plus the night.
+			 * 
+			 * All interfaces that do not apply the night effect
+			 * should be rendered after this point.
+			 */
+			g.drawImage(filterEffect, 0, 0, Constants.getWidth(), Constants.getHeight(), null);
+			
+			/**
+			 * Minimap
+			 */
+			if(menu && !GameConstants.getChat().isChatMenuOpen())
+				GameConstants.getMinimap().render(g);
+			
+			/**
+			 * Chatmenu
+			 */
 			if(GameConstants.getChat().isChatMenuOpen()) 
 				GameConstants.getChat().render(g);
 			break;
@@ -76,10 +111,10 @@ public class Pokemon extends Game{
 			
 			if(showmem){
 				g.setColor(Color.YELLOW);
-				g.drawString("Total Memory: " + Constants.formatBytes(Constants.getRunTime().totalMemory()), Constants.getWidth() - 200, 20);
-				g.drawString("Free Memory: " + Constants.formatBytes(Constants.getRunTime().freeMemory()), Constants.getWidth() - 200, 35);
+				g.drawString("Total Memory: " + Constants.formatBytes(Constants.getRunTime().totalMemory()), Constants.getWidth() - 300, 20);
+				g.drawString("Free Memory: " + Constants.formatBytes(Constants.getRunTime().freeMemory()), Constants.getWidth() - 300, 35);
 				g.drawString("Used Memory: " + Constants.formatBytes((Constants.getRunTime().totalMemory() - Constants.getRunTime().freeMemory())), 
-						Constants.getWidth() - 200, 50);
+						Constants.getWidth() - 300, 50);
 			}
 			
 			/**
@@ -99,12 +134,15 @@ public class Pokemon extends Game{
 		System.out.println("Loading Pokemon.");
 		tileTextures = ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/textures/pokemonTextures.gif", new Color(255,0,255)), 15, 15);
 		GameConstants.setPlayerImages(ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
+		filter = ImageUtils.loadImage("resources/sprites/textures/filter.gif");
 		
 		new GameFrame("Pokemon",this);
 		Constants.getGameFrame().consumeMouse(true);
 		Constants.getGameFrame().setIconImage(Toolkit.getDefaultToolkit().getImage(Pokemon.class.getResource("/resources/icons/pokeball.png")));
 		GameConstants.setPlayer(new PlayerEntity((short)280, (short)160, (short)35, (short)35, (byte)0, (byte)0, (short)10, (short)0));
 		GameConstants.setChat(new Chatbox());
+		GameConstants.setMinimap(new MinimapInterface((short) ((short)Constants.getWidth() - 155), (short)10, (short)130, (short)130));
+		menu = true;
 		
 		/**
 		 * Multiplayer check.
@@ -137,7 +175,8 @@ public class Pokemon extends Game{
 		 * This state will be set from a menu
 		 * screen later on.
 		 */
-		state = GameStates.PLAYING;
+		if(!GameConstants.isMultiplayer())
+			state = GameStates.PLAYING;
 		gameLoop();
 	}
 	
@@ -175,6 +214,46 @@ public class Pokemon extends Game{
 		 * Update players movement.
 		 */
 		GameConstants.getPlayer().move(up, down, left, right, delta);
+		
+		/**
+		 * Night time settings.
+		 */
+		if(!GameConstants.isNight() && GameConstants.getFulldayTimer().isUp()){
+			if(GameConstants.getTransitionTimer().isNotUp()){
+				if(GameConstants.getChangeTransitionTimer().isUp() && GameConstants.getTransition() < 0.6f){
+					GameConstants.setTransition(GameConstants.getTransition() + 0.0033f);
+					filterEffect = ImageUtils.changeTranslucentImage(filter, GameConstants.getTransition());
+					GameConstants.getMinimap().setSunmoonY(GameConstants.getMinimap().getSunmoonY() + (double)0.1485);
+					GameConstants.getChangeTransitionTimer().reset();
+				}
+			}else{
+				GameConstants.getFullnightTimer().reset();
+				GameConstants.getTransitionTimer().reset();
+				GameConstants.setNight(true);
+			}
+		}else if(!GameConstants.isNight() && GameConstants.getFulldayTimer().isNotUp()){
+			GameConstants.getTransitionTimer().reset();
+		}
+		
+		/**
+		 * Change back to day.
+		 */
+		if(GameConstants.isNight() && GameConstants.getFulldayTimer().isUp()){
+			if(GameConstants.getTransitionTimer().isNotUp()){
+				if(GameConstants.getChangeTransitionTimer().isUp() && GameConstants.getTransition() > 0.0033f){
+					GameConstants.setTransition(GameConstants.getTransition() - 0.0033f);
+					filterEffect = ImageUtils.changeTranslucentImage(filter, GameConstants.getTransition());
+					GameConstants.getMinimap().setSunmoonY(GameConstants.getMinimap().getSunmoonY() - (double)0.1485);
+					GameConstants.getChangeTransitionTimer().reset();
+				}
+			}else{
+				GameConstants.getFulldayTimer().reset();
+				GameConstants.getTransitionTimer().reset();
+				GameConstants.setNight(false);
+			}
+		}else if(GameConstants.isNight() && GameConstants.getFullnightTimer().isNotUp()){
+			GameConstants.getTransitionTimer().reset();
+		}
 	}
 
 	@Override
@@ -257,6 +336,12 @@ public class Pokemon extends Game{
 				showmem = false;
 			else
 				showmem = true;
+			break;
+		case KeyEvent.VK_M:
+			if(menu)
+				menu = false;
+			else
+				menu = true;
 			break;
 		}
 		

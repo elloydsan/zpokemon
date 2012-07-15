@@ -5,7 +5,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.pokemon.entities.OtherPlayerEntity;
+import org.pokemon.entities.PlayerEntity;
+import org.pokemon.interfaces.MinimapInterface;
 import org.zengine.networking.PacketManager;
+import org.zengine.uils.Timer;
 
 /**
  * 
@@ -17,11 +21,29 @@ public class GameConstants {
 	private static PlayerEntity player;
 	private static BufferedImage[] playerImages;
 	
+	//Time
+	private static Timer fulldayTimer = new Timer(2400000); //Currently set at 		40 minutes.
+	private static Timer fullnightTimer = new Timer(300000); //Currently set at 	10 minutes.
+	private static Timer transitionTimer = new Timer(300000); //Currently set at 	5 minutes.
+	private static Timer changeTransitionTimer = new Timer(100); //Currently at 	5 seconds.
+	
+	//For debugging
+	/*private static Timer fulldayTimer = new Timer(5000); //Currently set at 		40 minutes.
+	private static Timer fullnightTimer = new Timer(5000); //Currently set at 		10 minutes.
+	private static Timer transitionTimer = new Timer(30000); //Currently set at 	5 minutes.
+	private static Timer changeTransitionTimer = new Timer(100); //Currently at 	5 seconds.
+	*/
+	private static float transition;
+	private static boolean night;
+	
+	//Minimap
+	private static MinimapInterface minimap;
+	
 	//Chat
 	private static Chatbox chat;
 	
 	//Networking
-	private static boolean multiplayer = true;
+	private static boolean multiplayer = false;
 	private static PacketManager packetManager;
 	private static ArrayList<OtherPlayerEntity> playerList = new ArrayList<OtherPlayerEntity>();
 	
@@ -72,11 +94,67 @@ public class GameConstants {
 	public static void setPlayerImages(BufferedImage[] playerImages) {
 		GameConstants.playerImages = playerImages;
 	}
-	
+
+	public static Timer getFulldayTimer() {
+		return fulldayTimer;
+	}
+
+	public static Timer getFullnightTimer() {
+		return fullnightTimer;
+	}
+
+	public static Timer getTransitionTimer() {
+		return transitionTimer;
+	}
+
+	public static Timer getChangeTransitionTimer() {
+		return changeTransitionTimer;
+	}
+
+	public static float getTransition() {
+		return transition;
+	}
+
+	public static void setFulldayTimer(Timer fulldayTimer) {
+		GameConstants.fulldayTimer = fulldayTimer;
+	}
+
+	public static void setFullnightTimer(Timer fullnightTimer) {
+		GameConstants.fullnightTimer = fullnightTimer;
+	}
+
+	public static void setTransitionTimer(Timer transitionTimer) {
+		GameConstants.transitionTimer = transitionTimer;
+	}
+
+	public static void setChangeTransitionTimer(Timer changeTransitionTimer) {
+		GameConstants.changeTransitionTimer = changeTransitionTimer;
+	}
+
+	public static void setTransition(float transition) {
+		GameConstants.transition = transition;
+	}
+
+	public static boolean isNight() {
+		return night;
+	}
+
+	public static void setNight(boolean night) {
+		GameConstants.night = night;
+	}
+
 	public static Chatbox getChat() {
 		return chat;
 	}
 	
+	public static MinimapInterface getMinimap() {
+		return minimap;
+	}
+
+	public static void setMinimap(MinimapInterface minimap) {
+		GameConstants.minimap = minimap;
+	}
+
 	public static void setChat(Chatbox chat) {
 		GameConstants.chat = chat;
 	}

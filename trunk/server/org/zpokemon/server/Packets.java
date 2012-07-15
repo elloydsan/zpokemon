@@ -10,6 +10,24 @@ package org.zpokemon.server;
 public class Packets {
 	
 	/**
+	 * This will generate a server time packet.
+	 */
+	public static String serverTime(){
+		return PacketHeaders.SERVER_TIME.getHeader() +
+				Constants.getFulldayTimer().timeLimit + ":" + 
+				Constants.getFulldayTimer().endTime + ":" +
+				Constants.getFullnightTimer().timeLimit + ":" + 
+				Constants.getFullnightTimer().endTime + ":" +
+				Constants.getTransitionTimer().timeLimit + ":" + 
+				Constants.getTransitionTimer().endTime + ":" +
+				Constants.getChangeTransitionTimer().timeLimit + ":" + 
+				Constants.getChangeTransitionTimer().endTime + ":" +
+				Constants.getTransition() + ":" +
+				Constants.isNight() + ":" +
+				Constants.getSunmoonY();
+	}
+	
+	/**
 	 * This will generate a map create packet.
 	 * 
 	 * @return String
