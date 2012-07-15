@@ -1,6 +1,6 @@
 package org.zengine.graphics;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 /**
  * 
@@ -8,5 +8,5 @@ import java.awt.Graphics;
  *
  */
 public interface Paintable {
-	public void render(Graphics g);
+	public void render(Graphics2D g);
 }

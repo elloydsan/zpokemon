@@ -1,7 +1,7 @@
 package org.pokemon;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -211,7 +211,7 @@ public class TileMap implements Paintable{
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		if(Constants.getWidth() > viewport.getWidth()){
 			viewport = new Rectangle(-(this.tileWidth * 3), 
 					-(this.tileHeight * 3), 

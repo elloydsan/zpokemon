@@ -1,6 +1,6 @@
 package org.pokemon.utils;
 
-import org.pokemon.PokemonEntity;
+import org.pokemon.entities.PokemonEntity;
 import org.zengine.uils.Random;
 
 public class FormulaCalculator {
@@ -13,7 +13,7 @@ public class FormulaCalculator {
 	 */
 	private static final byte POKE_BALL = 1;
 	private static final byte GREAT_BALL = 2;
-	private static final byte ULTRA_BALL = 3;
+	//private static final byte ULTRA_BALL = 3;
 	private static final byte MASTER_BALL = 4;
 	
 	private static Random random = new Random();

@@ -103,6 +103,11 @@ public class Server extends JFrame{
 	        log("Could not listen on port: " + portNumber);
 	        System.exit(-1);
 	    }
+		
+		/**
+		 * Start the time manager.
+		 */
+		new TimeManager();
 
 	    /**
 	     * While listening for connections
@@ -111,6 +116,9 @@ public class Server extends JFrame{
 	    while(listening){
 	    	Constants.getClients().add(new ClientThread(serverSocket.accept(), clientNumber++));
 	    	 
+			/**
+			 * Sleep
+			 */
 	    	try {
 	    		Thread.sleep(100);
 	    	}catch (InterruptedException e) {

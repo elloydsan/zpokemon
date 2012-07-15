@@ -1,4 +1,4 @@
-package org.pokemon;
+package org.pokemon.utils;
 
 /**
  * 

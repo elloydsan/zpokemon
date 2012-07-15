@@ -12,9 +12,11 @@ import java.net.UnknownHostException;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.pokemon.GameConstants;
-import org.pokemon.OtherPlayerEntity;
+import org.pokemon.GameStates;
 import org.pokemon.Pokemon;
 import org.pokemon.TileMap;
+import org.pokemon.entities.OtherPlayerEntity;
+import org.zengine.uils.ImageUtils;
 
 /**
  * 
@@ -158,41 +160,32 @@ public class PacketManager {
 				        //Fill map.
 				        sendPacket(PacketHeaders.MAP_CHUNK.getHeader() + ":");
 				        
+				        //Get server time.
+				        sendPacket(PacketHeaders.SERVER_TIME.getHeader() + ":");
+				        
 				        //Get player list
 				        sendPacket(PacketHeaders.PLAYER_LIST.getHeader() + ":");
+				        
+				        //Start the game.
+				        Pokemon.state = GameStates.PLAYING;
 			        	break;
-			        case 1: //Get player list
-			        	if(Short.parseShort(replyPacket[0]) != GameConstants.getPlayer().getId()){
-			        		//Try and find the user.
-			        		OtherPlayerEntity found = GameConstants.getPlayer(Short.parseShort(replyPacket[0]));
-			        			
-			        		if(found != null){ //If we found a client update them.
-			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setX(Double.parseDouble(replyPacket[1]));
-			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setY(Double.parseDouble(replyPacket[2]));
-			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setAnimation(Byte.parseByte(replyPacket[3]));
-			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setInGrass(Boolean.valueOf(replyPacket[4]));
-			        			//System.out.println("Updating player: " + replyPacket[0] + " XY: " + replyPacket[1] + "," + replyPacket[2] + "," + replyPacket[3]);
-			        		}else{ //Else add a new user in.
-			        			GameConstants.getPlayerList().add(new OtherPlayerEntity(Short.parseShort(replyPacket[0]),
-				        				Double.parseDouble(replyPacket[1]), 
-					        			Double.parseDouble(replyPacket[2]), 
-					        			(short)35, 
-					        			(short)35, 
-					        			(byte)0, 
-					        			Byte.parseByte(replyPacket[3]), 
-					        			(short)0));
-			        			
-			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setInGrass(Boolean.valueOf(replyPacket[4]));
-					        	//System.out.println("Trying to add players. ID: " + replyPacket[0] + " XY: " + replyPacket[1] + "," + replyPacket[2]);
-			        		}
-			        	}
+			        case 1: //Server Time
+			        	System.out.println("Server sunmoon: " + replyPacket[10]);
+			        	
+			        	GameConstants.getFulldayTimer().timeLimit = Long.parseLong(replyPacket[0]);
+			        	GameConstants.getFulldayTimer().endTime = Long.parseLong(replyPacket[1]);
+			        	GameConstants.getFullnightTimer().timeLimit = Long.parseLong(replyPacket[2]);
+			        	GameConstants.getFullnightTimer().endTime = Long.parseLong(replyPacket[3]);
+			        	GameConstants.getTransitionTimer().timeLimit = Long.parseLong(replyPacket[4]);
+			        	GameConstants.getTransitionTimer().endTime = Long.parseLong(replyPacket[5]);
+			        	GameConstants.getChangeTransitionTimer().timeLimit = Long.parseLong(replyPacket[6]);
+			        	GameConstants.getChangeTransitionTimer().endTime = Long.parseLong(replyPacket[7]);
+			        	GameConstants.setTransition(Float.parseFloat(replyPacket[8]));
+			        	Pokemon.filterEffect = ImageUtils.changeTranslucentImage(Pokemon.filter, GameConstants.getTransition());
+			        	GameConstants.setNight(Boolean.parseBoolean(replyPacket[9]));
+			        	GameConstants.getMinimap().setSunmoonY(GameConstants.getMinimap().getSunmoonY() + Double.parseDouble(replyPacket[10]));
 			        	break;
-			        case 2: //Move player
-			        	break;
-			        case 3: //Disconnect player
-			        	GameConstants.getPlayerList().remove(GameConstants.getPlayer(Short.parseShort(header[1])));
-			        	break;
-			        case 4: //Create map
+			        case 2: //Create map
 			        	GameConstants.setTilemap(new TileMap(Short.parseShort(replyPacket[0]),
 			        			Short.parseShort(replyPacket[1]),
 			        			Short.parseShort(replyPacket[2]),
@@ -204,7 +197,7 @@ public class PacketManager {
 			        	GameConstants.getPlayer().setX(Double.parseDouble(replyPacket[6]));
 			        	GameConstants.getPlayer().setY(Double.parseDouble(replyPacket[7]));
 			        	break;
-			        case 5: //Download map chunks / fill map data.
+			        case 3: //Download map chunks / fill map data.
 			        	if(header.length > 2){
 			        		replyPacket = header[2].split(":");
 			        	
@@ -250,8 +243,37 @@ public class PacketManager {
 				        	}
 			        	}
 			        	break;
-			        case 6: //Receive message's from all clients.
-			        	if((short)Integer.parseInt(replyPacket[0]) != GameConstants.getPlayer().getId())
+			        case 4: //Get player list
+			        	if(Short.parseShort(replyPacket[0]) != GameConstants.getPlayer().getId()){
+			        		if(GameConstants.getPlayer(Short.parseShort(replyPacket[0])) != null){ //If we found a client update them.
+			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setX(Double.parseDouble(replyPacket[1]));
+			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setY(Double.parseDouble(replyPacket[2]));
+			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setAnimation(Byte.parseByte(replyPacket[3]));
+			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setInGrass(Boolean.valueOf(replyPacket[4]));
+			        			//System.out.println("Updating player: " + replyPacket[0] + " XY: " + replyPacket[1] + "," + replyPacket[2] + "," + replyPacket[3]);
+			        		}else{ //Else add a new user in.
+			        			GameConstants.getPlayerList().add(new OtherPlayerEntity(Short.parseShort(replyPacket[0]),
+				        				Double.parseDouble(replyPacket[1]), 
+					        			Double.parseDouble(replyPacket[2]), 
+					        			(short)35, 
+					        			(short)35, 
+					        			(byte)0, 
+					        			Byte.parseByte(replyPacket[3]), 
+					        			(short)0));
+			        			
+			        			GameConstants.getPlayer(Short.parseShort(replyPacket[0])).setInGrass(Boolean.valueOf(replyPacket[4]));
+					        	//System.out.println("Trying to add players. ID: " + replyPacket[0] + " XY: " + replyPacket[1] + "," + replyPacket[2]);
+			        		}
+			        	}
+			        	break;
+			        case 5: //Move player
+			        	break;
+			        case 6: //Disconnect player
+			        	GameConstants.getPlayerList().remove(GameConstants.getPlayer(Short.parseShort(header[1])));
+			        	break;
+			      
+			        case 7: //Receive message's from all clients.
+			        	if((short)Integer.parseInt(replyPacket[0]) != GameConstants.getPlayer().getId() && replyPacket.length > 1)
 			        		GameConstants.getChat().setChatlog(GameConstants.getChat().getChatlog() + 
 			        				replyPacket[0] + " - " + 
 			        				replyPacket[1] + "~");

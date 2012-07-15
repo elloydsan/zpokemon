@@ -1,7 +1,9 @@
-package org.pokemon;
+package org.pokemon.entities;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+
+import org.pokemon.GameConstants;
 
 
 /**
@@ -75,7 +77,7 @@ public class OtherPlayerEntity extends Entity {
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		g.setColor(Color.WHITE);
 		g.drawString("Player: " + super.getId(), 
 				(int)super.getX() + (int)GameConstants.getTilemap().getxOffSet() -10, 
