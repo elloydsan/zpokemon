@@ -1,0 +1,24 @@
+name:		Example Map		//The name of the map, this may be used in game to describe the loading area.
+cols:		30				//The number of columns in the map.
+rows:		20				//The number of rows in the map.
+width:		20				//The width of a tile.
+height:		20				//The height of a tile.
+start x:	100				//The player's starting location should be used with this value to make the map offset at the correct position.
+start y:	100				//The player's starting location should be used with this value to make the map offset at the correct position.
+
+//Example tile: x,y,state,interactive,image id (use a ":" to seperate tiles.)
+//Tiles default with all 0's if this matches your tile there is no need to write it in.
+//Layer 1 is the background which is always rendered.
+layer 1: 
+0,0,0,0,134:0,1,0,1,1
+; //This end's the layer, it is required.
+
+//Layer 2 is generally overlay tiles used to blend.
+layer 2:
+
+; //This end's the layer, it is required.
+
+//Layer 3 is generally objects.
+layer 3:
+
+; //This end's the layer, it is required.

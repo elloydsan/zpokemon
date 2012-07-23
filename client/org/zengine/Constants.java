@@ -21,6 +21,8 @@ public class Constants {
 	private static int oldHeight = 600;
 	private static int preferedWidth = 800;
 	private static int preferedHeight = 600;
+	private static int minimumWidth = 420;
+	private static int minimumHeight = 400;
 	private static int screenWidth = 800;
 	private static int screenHeight = 600;
 	
@@ -116,6 +118,22 @@ public class Constants {
 
 	public static void setPreferedHeight(int preferedHeight) {
 		Constants.preferedHeight = preferedHeight;
+	}
+
+	public static int getMinimumWidth() {
+		return minimumWidth;
+	}
+
+	public static int getMinimumHeight() {
+		return minimumHeight;
+	}
+
+	public static void setMinimumWidth(int minimumWidth) {
+		Constants.minimumWidth = minimumWidth;
+	}
+
+	public static void setMinimumHeight(int minimumHeight) {
+		Constants.minimumHeight = minimumHeight;
 	}
 
 	public static int getScreenWidth() {

@@ -79,7 +79,7 @@ public class Server extends JFrame{
 		this.setVisible(true);
 		
 		//Create a new tile map.
-		Constants.setTileMap(new TileMap((short)30,(short)20,(short)20,(short)20,(short)280, (short)160));
+		Constants.setTileMap(new TileMap("test", (short)30,(short)20,(short)20,(short)20, 100, 100,(short)280, (short)160));
 		
 		try{
 			ServerLoop();

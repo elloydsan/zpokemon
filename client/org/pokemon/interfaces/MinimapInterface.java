@@ -15,6 +15,19 @@ import org.zengine.uils.ImageUtils;
 /**
  * 
  * @author Troy
+ * 
+ * Setting the clipping zone takes up a fair bit of
+ * memory it must create a new object every time this
+ * happens which is about 30 times a second...
+ * 
+ * To reduce some memory usage in the future we could
+ * possible render to a image and then draw the image.
+ * 
+ * This way we only update the image when needed.
+ * 
+ * The tricky part with that will be making sure we
+ * don't have a update occur in the rendering phase or
+ * else we make see black and flickering in the image...
  *
  */
 public class MinimapInterface extends Interface{
@@ -111,7 +124,7 @@ public class MinimapInterface extends Interface{
 				if(circleRender.contains(new Point(((super.getX() - 13) - (int)xOffSet) + (b * (GameConstants.getTilemap().getTileWidth() / scale)) + (int)(GameConstants.getTilemap().getxOffSet() / scale), 
 						((super.getY() + 11) - (int)yOffSet) + (a * (GameConstants.getTilemap().getTileHeight() / scale)) + (int)(GameConstants.getTilemap().getyOffSet() / scale)))){
 					
-					g.drawImage(GameConstants.getTilemap().getImages()[GameConstants.getTilemap().getLayer1()[b][a].getImage()], 
+					g.drawImage(GameConstants.getTileImages()[GameConstants.getTilemap().getLayer1()[b][a].getImage()], 
 							((super.getX() - 13) - (int)xOffSet) + (b * (GameConstants.getTilemap().getTileWidth() / scale)) + (int)(GameConstants.getTilemap().getxOffSet() / scale), 
 							((super.getY() + 11) - (int)yOffSet) + (a * (GameConstants.getTilemap().getTileHeight() / scale)) + (int)(GameConstants.getTilemap().getyOffSet() / scale),  
 							(GameConstants.getTilemap().getTileWidth() / scale), 
@@ -119,7 +132,7 @@ public class MinimapInterface extends Interface{
 							null);
 					
 					if(GameConstants.getTilemap().getLayer2()[b][a].getImage() > 0){
-						g.drawImage(GameConstants.getTilemap().getImages()[GameConstants.getTilemap().getLayer2()[b][a].getImage()], 
+						g.drawImage(GameConstants.getTileImages()[GameConstants.getTilemap().getLayer2()[b][a].getImage()], 
 								((super.getX() - 13) - (int)xOffSet) + (b * (GameConstants.getTilemap().getTileWidth() / scale)) + (int)(GameConstants.getTilemap().getxOffSet() / scale), 
 								((super.getY() + 11) - (int)yOffSet) + (a * (GameConstants.getTilemap().getTileHeight() / scale)) + (int)(GameConstants.getTilemap().getyOffSet() / scale),  
 								(GameConstants.getTilemap().getTileWidth() / scale), 
@@ -128,7 +141,7 @@ public class MinimapInterface extends Interface{
 					}
 					
 					if(GameConstants.getTilemap().getLayer3()[b][a].getImage() > 0){
-						g.drawImage(GameConstants.getTilemap().getImages()[GameConstants.getTilemap().getLayer3()[b][a].getImage()], 
+						g.drawImage(GameConstants.getTileImages()[GameConstants.getTilemap().getLayer3()[b][a].getImage()], 
 								((super.getX() - 13) - (int)xOffSet) + (b * (GameConstants.getTilemap().getTileWidth() / scale)) + (int)(GameConstants.getTilemap().getxOffSet() / scale), 
 								((super.getY() + 11) - (int)yOffSet) + (a * (GameConstants.getTilemap().getTileHeight() / scale)) + (int)(GameConstants.getTilemap().getyOffSet() / scale),  
 								(GameConstants.getTilemap().getTileWidth() / scale), 
