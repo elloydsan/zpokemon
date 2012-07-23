@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import org.pokemon.entities.OtherPlayerEntity;
 import org.pokemon.entities.PlayerEntity;
 import org.pokemon.interfaces.MinimapInterface;
+import org.pokemon.utils.MapLoader;
 import org.zengine.Constants;
 import org.zengine.Game;
 import org.zengine.GameFrame;
@@ -93,6 +94,7 @@ public class Pokemon extends Game{
 			 */
 			if(GameConstants.getChat().isChatMenuOpen()) 
 				GameConstants.getChat().render(g);
+			
 			break;
 		case PAUSED:
 			break;
@@ -132,7 +134,7 @@ public class Pokemon extends Game{
 		 * Init variables etc...
 		 */
 		System.out.println("Loading Pokemon.");
-		tileTextures = ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/textures/pokemonTextures.gif", new Color(255,0,255)), 15, 15);
+		GameConstants.setTileImages(ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/textures/pokemonTextures.gif", new Color(255,0,255)), 15, 15));
 		GameConstants.setPlayerImages(ImageUtils.splitImage(ImageUtils.makeColorTransparent("resources/sprites/players/pokemonPlayer.gif", new Color(255,0,255)), 12, 4));
 		filter = ImageUtils.loadImage("resources/sprites/textures/filter.gif");
 		
@@ -152,7 +154,8 @@ public class Pokemon extends Game{
 			GameConstants.setPacketManager(new PacketManager("127.0.0.1",5632));
 			//GameConstants.setPacketManager(new PacketManager("118.208.29.29",5632));
 		}else{
-			GameConstants.setTilemap(new TileMap((short)30,(short)20,(short)20,(short)20,tileTextures));
+			//GameConstants.setTilemap(new TileMap("test", (short)30,(short)20,(short)20,(short)20,100,100));
+			GameConstants.setTilemap(MapLoader.loadmap("map"));
 		}
 	}
 
@@ -338,10 +341,12 @@ public class Pokemon extends Game{
 				showmem = true;
 			break;
 		case KeyEvent.VK_M:
-			if(menu)
-				menu = false;
-			else
-				menu = true;
+			if(!GameConstants.getChat().isChatMenuOpen()){
+				if(menu)
+					menu = false;
+				else
+					menu = true;
+			}
 			break;
 		}
 		

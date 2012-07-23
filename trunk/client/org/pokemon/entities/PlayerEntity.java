@@ -110,7 +110,6 @@ public class PlayerEntity extends Entity {
 		if(up && super.getY() >= 0 &&
 				GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - pixelJump) / GameConstants.getTilemap().getTileHeight())){
 			
-			//super.setAnimation((byte) 6);
 			super.setY(super.getY() - pixelJump);
 			GameConstants.getTilemap().setyOffSet(GameConstants.getTilemap().getyOffSet() + pixelJump);
 			
@@ -194,7 +193,6 @@ public class PlayerEntity extends Entity {
 		if(!up && !down && !left && !right){
 			switch(super.getDirection()){
 			case 0:
-				//if(super.getY() != super.getDy()){
 				if(super.getY()%GameConstants.getTilemap().getTileHeight()!=0){
 					if(super.getY() >= 0 && 
 							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() - pixelJump) / GameConstants.getTilemap().getTileHeight())){
@@ -238,7 +236,6 @@ public class PlayerEntity extends Entity {
 				}
 				break;
 			case 1:
-				//if(super.getY() != super.getDy()){
 				if(super.getY()%GameConstants.getTilemap().getTileHeight()!=0){
 					if(super.getY() <= (GameConstants.getTilemap().getTileRows() * GameConstants.getTilemap().getTileHeight()) - GameConstants.getTilemap().getTileHeight() &&
 							GameConstants.isTileFree((int)(super.getX() / GameConstants.getTilemap().getTileWidth()), (int) (super.getY() + pixelJump) / GameConstants.getTilemap().getTileHeight())){
@@ -282,7 +279,6 @@ public class PlayerEntity extends Entity {
 				}
 				break;
 			case 2:
-				//if(super.getX() != super.getDx()){
 				if(super.getX()%GameConstants.getTilemap().getTileWidth()!=0){
 					if(super.getX() >= 0 &&
 							GameConstants.isTileFree((int)((int)super.getX() - pixelJump) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){
@@ -322,7 +318,6 @@ public class PlayerEntity extends Entity {
 				}
 				break;
 			case 3:
-				//if(super.getX() != super.getDx()){
 				if(super.getX()%GameConstants.getTilemap().getTileWidth()!=0){
 					if(super.getX() <= (GameConstants.getTilemap().getTileCols() * GameConstants.getTilemap().getTileWidth()) - GameConstants.getTilemap().getTileWidth() &&
 							GameConstants.isTileFree((int)(super.getX() + pixelJump) / GameConstants.getTilemap().getTileWidth(), (int)super.getY() / GameConstants.getTilemap().getTileHeight())){

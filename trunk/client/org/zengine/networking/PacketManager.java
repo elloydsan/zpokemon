@@ -186,16 +186,16 @@ public class PacketManager {
 			        	GameConstants.getMinimap().setSunmoonY(GameConstants.getMinimap().getSunmoonY() + Double.parseDouble(replyPacket[10]));
 			        	break;
 			        case 2: //Create map
-			        	GameConstants.setTilemap(new TileMap(Short.parseShort(replyPacket[0]),
+			        	GameConstants.setTilemap(new TileMap(replyPacket[0],
 			        			Short.parseShort(replyPacket[1]),
 			        			Short.parseShort(replyPacket[2]),
 			        			Short.parseShort(replyPacket[3]),
-			        			Pokemon.tileTextures));
+			        			Short.parseShort(replyPacket[4]),
+			        			Double.parseDouble(replyPacket[5]),
+			        			Double.parseDouble(replyPacket[6])));
 			        	
-			        	GameConstants.getTilemap().setxOffSet(Double.parseDouble(replyPacket[4]));
-			        	GameConstants.getTilemap().setyOffSet(Double.parseDouble(replyPacket[5]));
-			        	GameConstants.getPlayer().setX(Double.parseDouble(replyPacket[6]));
-			        	GameConstants.getPlayer().setY(Double.parseDouble(replyPacket[7]));
+			        	GameConstants.getPlayer().setX(Double.parseDouble(replyPacket[7]));
+			        	GameConstants.getPlayer().setY(Double.parseDouble(replyPacket[8]));
 			        	break;
 			        case 3: //Download map chunks / fill map data.
 			        	if(header.length > 2){

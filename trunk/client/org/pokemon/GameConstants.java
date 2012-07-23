@@ -20,6 +20,7 @@ public class GameConstants {
 	private static TileMap tilemap;
 	private static PlayerEntity player;
 	private static BufferedImage[] playerImages;
+	private static BufferedImage[] tileImages;
 	
 	//Time
 	private static Timer fulldayTimer = new Timer(2400000); //Currently set at 		40 minutes.
@@ -93,6 +94,14 @@ public class GameConstants {
 
 	public static void setPlayerImages(BufferedImage[] playerImages) {
 		GameConstants.playerImages = playerImages;
+	}
+
+	public static BufferedImage[] getTileImages() {
+		return tileImages;
+	}
+
+	public static void setTileImages(BufferedImage[] tileImages) {
+		GameConstants.tileImages = tileImages;
 	}
 
 	public static Timer getFulldayTimer() {

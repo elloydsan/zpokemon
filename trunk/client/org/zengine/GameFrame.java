@@ -156,18 +156,22 @@ public class GameFrame extends JFrame implements ComponentListener{
 
 	@Override
 	public void componentResized(ComponentEvent e) {
+		if(getWidth() < Constants.getMinimumWidth() && getHeight() < Constants.getMinimumHeight()){
+			this.setSize(Constants.getMinimumWidth(), Constants.getMinimumHeight());
+		}
+		
 		if(!Constants.isFullscreen()){
 			while(getWidth()%Constants.getTileWidth()!=0)
 				this.setSize(getWidth() -1, getHeight());
-			
+				
 			while(getHeight()%Constants.getTileHeight()!=0)
 				this.setSize(getWidth(), getHeight() -1);
 		}
-		
+			
 		Constants.setWidth(getWidth());
 		Constants.setHeight(getHeight());
 		Constants.getGameCanvas().setClip(new Rectangle(-100, -100, Constants.getWidth() +100, Constants.getHeight() +100));
-		
+			
 		if(GameConstants.getTilemap() != null){
 			GameConstants.getTilemap().setxOffSet(GameConstants.getTilemap().getxOffSet() + 
 					(((double)Constants.getWidth() - (double)Constants.getOldWidth()) * (double)0.5));
@@ -182,7 +186,7 @@ public class GameFrame extends JFrame implements ComponentListener{
 			GameConstants.getMinimap().setyOffSet(GameConstants.getMinimap().getyOffSet() + 
 					((((double)Constants.getHeight() - (double)Constants.getOldHeight()) * (double)0.5) /GameConstants.getMinimap().getScale()));
 		}
-		
+			
 		Constants.getGameCanvas().setSize(getWidth(), getHeight());
 	}
 

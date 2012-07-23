@@ -16,6 +16,7 @@ package org.zpokemon;
  *
  */
 public class TileMap{
+	private String name;
 	private short startX;
 	private short startY;
 	private double xOffSet;
@@ -39,15 +40,16 @@ public class TileMap{
 	 * @param startX
 	 * @param startY
 	 */
-	public TileMap(short tileCols, short tileRows, short tileWidth, short tileHeight, short startX, short startY){
+	public TileMap(String name, short tileCols, short tileRows, short tileWidth, short tileHeight, double xoff, double yoff, short startX, short startY){
+		this.name = name;
 		this.tileCols = tileCols;
 		this.tileRows = tileRows;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		this.startX = startX;
 		this.startY = startY;
-		this.xOffSet = 100;
-		this.yOffSet = 100;
+		this.xOffSet = xoff;
+		this.yOffSet = yoff;
 		
 		tileCount = (short) (tileCols * tileRows);
 		layer1 = new Tile[tileCols][tileRows];
@@ -133,6 +135,14 @@ public class TileMap{
 		layer1[tileCols-1][0].setState((byte) 1);
 		layer1[0][tileRows-1].setState((byte) 1);
 		layer1[tileCols-1][tileRows-1].setState((byte) 1);
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public short getStartX() {

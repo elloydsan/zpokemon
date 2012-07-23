@@ -23,6 +23,7 @@ public class GameCanvas extends Canvas{
 	private GraphicsDevice graphicsDevice;
 	private GraphicsEnvironment graphicsEnviroment;
 	private BufferStrategy buffer;
+	private Graphics2D g;
 	private Rectangle clip = new Rectangle(-100, -100, Constants.getWidth() +100, Constants.getHeight() +100);
 	
 	public GameCanvas(){
@@ -54,7 +55,7 @@ public class GameCanvas extends Canvas{
 	 * @param backBuffer
 	 */
 	public void draw(){	
-		Graphics2D g = (Graphics2D) buffer.getDrawGraphics();  
+		g = (Graphics2D) buffer.getDrawGraphics();  
 		/**
 		 * Turn antialias on to smooth out ruff edges.
 		 * 

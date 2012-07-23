@@ -34,6 +34,7 @@ public class Packets {
 	 */
 	public static String mapCreate(){
 		return PacketHeaders.MAP_CREATE.getHeader() +
+				Constants.getTileMap().getName() + ":" +
 				Constants.getTileMap().getTileCols() + ":" +
 				Constants.getTileMap().getTileRows() + ":" +
 				Constants.getTileMap().getTileWidth() + ":" +

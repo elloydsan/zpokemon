@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 
 import org.zengine.Constants;
 import org.zengine.graphics.Paintable;
@@ -25,6 +24,7 @@ import org.zengine.graphics.Paintable;
  *
  */
 public class TileMap implements Paintable{
+	private String name;
 	private double xOffSet;
 	private double yOffSet;
 	private short tileCols;
@@ -36,7 +36,6 @@ public class TileMap implements Paintable{
 	private Tile[][] layer1;
 	private Tile[][] layer2;
 	private Tile[][] layer3;
-	private BufferedImage[] images;
 	
 	/**
 	 * Create a new TileMap.
@@ -47,20 +46,22 @@ public class TileMap implements Paintable{
 	 * 2: Overlay tiles to blend tiles together.
 	 * 3: Objects.
 	 * 
+	 * @param name
 	 * @param tileCols
 	 * @param tileRows
 	 * @param tileWidth
 	 * @param tileHeight
-	 * @param images
+	 * @param startX
+	 * @param startY
 	 */
-	public TileMap(short tileCols, short tileRows, short tileWidth, short tileHeight, BufferedImage[] images){
+	public TileMap(String name, short tileCols, short tileRows, short tileWidth, short tileHeight, double startX, double startY){
+		this.name = name;
 		this.tileCols = tileCols;
 		this.tileRows = tileRows;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
-		this.images = images;
-		this.xOffSet = 100;
-		this.yOffSet = 100;
+		this.xOffSet = startX;
+		this.yOffSet = startY;
 		
 		tileCount = (short) (tileCols * tileRows);
 		layer1 = new Tile[tileCols][tileRows];
@@ -84,12 +85,12 @@ public class TileMap implements Paintable{
 		System.out.println("Viewport: " + viewport.getX() + "," + viewport.getY() + "," + viewport.getWidth() + "," + viewport.getHeight());
 		
 		//Set some water in the top left hand corner.
-		/*layer1[0][0].setImage(134);
-		layer1[1][0].setImage(134);
-		layer1[2][0].setImage(134);
-		layer1[3][0].setImage(134);
-		layer1[4][0].setImage(134);
-		layer1[5][0].setImage(134);
+		/*layer1[0][0].setImage((short) 134);
+		layer1[1][0].setImage((short) 134);
+		layer1[2][0].setImage((short) 134);
+		layer1[3][0].setImage((short) 134);
+		layer1[4][0].setImage((short) 134);
+		layer1[5][0].setImage((short) 134);
 		
 		layer1[0][0].setState((byte) 1);
 		layer1[1][0].setState((byte) 1);
@@ -98,20 +99,51 @@ public class TileMap implements Paintable{
 		layer1[4][0].setState((byte) 1);
 		layer1[5][0].setState((byte) 1);
 		
-		layer2[0][1].setImage(2);
-		layer3[1][1].setImage(4);
+		layer2[0][1].setImage((short) 2);
+		layer3[1][1].setImage((short) 4);
 		
 		layer2[0][1].setState((byte) 1);
 		layer3[1][1].setState((byte) 1);
 		
 		//And add in some fences at the corners of the map.
-		layer1[tileCols-1][0].setImage(3);
-		layer1[0][tileRows-1].setImage(4);
-		layer1[tileCols-1][tileRows-1].setImage(5);
+		layer1[tileCols-1][0].setImage((short) 3);
+		layer1[0][tileRows-1].setImage((short) 4);
+		layer1[tileCols-1][tileRows-1].setImage((short) 5);
 		
 		layer1[tileCols-1][0].setState((byte) 1);
 		layer1[0][tileRows-1].setState((byte) 1);
-		layer1[tileCols-1][tileRows-1].setState((byte) 1);*/
+		layer1[tileCols-1][tileRows-1].setState((byte) 1);
+		
+		
+		
+		layer2[10][tileRows-1].setImage((short) 16);
+		layer2[11][tileRows-1].setImage((short) 16);
+		layer2[12][tileRows-1].setImage((short) 16);
+		layer2[13][tileRows-1].setImage((short) 16);
+		layer2[14][tileRows-1].setImage((short) 16);
+		layer2[15][tileRows-1].setImage((short) 16);
+		
+		layer2[10][tileRows-2].setImage((short) 15);
+		layer2[11][tileRows-2].setImage((short) 15);
+		layer2[12][tileRows-2].setImage((short) 15);
+		layer2[13][tileRows-2].setImage((short) 15);
+		layer2[14][tileRows-2].setImage((short) 15);
+		layer2[15][tileRows-2].setImage((short) 15);
+		
+		layer2[10][tileRows-3].setImage((short) 15);
+		layer2[11][tileRows-3].setImage((short) 15);
+		layer2[12][tileRows-3].setImage((short) 15);
+		layer2[13][tileRows-3].setImage((short) 15);
+		layer2[14][tileRows-3].setImage((short) 15);
+		layer2[15][tileRows-3].setImage((short) 15);*/
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public double getxOffSet() {
@@ -202,14 +234,6 @@ public class TileMap implements Paintable{
 		this.layer3 = layer3;
 	}
 
-	public BufferedImage[] getImages() {
-		return images;
-	}
-
-	public void setImages(BufferedImage[] images) {
-		this.images = images;
-	}
-
 	@Override
 	public void render(Graphics2D g) {
 		if(Constants.getWidth() > viewport.getWidth()){
@@ -218,7 +242,7 @@ public class TileMap implements Paintable{
 					Constants.getWidth() + (this.tileWidth * 3), 
 					Constants.getHeight() + (this.tileHeight * 3));
 			
-			System.out.println("Updating viewport: " + viewport.getX() + "," + viewport.getY() + "," + viewport.getWidth() + "," + viewport.getHeight());
+			//System.out.println("Updating viewport: " + viewport.getX() + "," + viewport.getY() + "," + viewport.getWidth() + "," + viewport.getHeight());
 		}
 		
 		g.setColor(Color.WHITE);
@@ -232,7 +256,7 @@ public class TileMap implements Paintable{
 			for(short b = 0; b < tileCols; b++){
 				if(viewport.contains(new Point((b * tileWidth) + (int)xOffSet, 
 												(a * tileHeight) + (int)yOffSet))){
-					g.drawImage(images[layer1[b][a].getImage()], 
+					g.drawImage(GameConstants.getTileImages()[layer1[b][a].getImage()], 
 							(b * tileWidth) + (int)xOffSet, 
 							(a * tileHeight) + (int)yOffSet, 
 							tileWidth, 
@@ -240,7 +264,7 @@ public class TileMap implements Paintable{
 							null);
 					
 					if(layer2[b][a].getImage() > 0){
-						g.drawImage(images[layer2[b][a].getImage()], 
+						g.drawImage(GameConstants.getTileImages()[layer2[b][a].getImage()], 
 								(b * tileWidth) + (int)xOffSet, 
 								(a * tileHeight) + (int)yOffSet, 
 								tileWidth, 
@@ -249,7 +273,7 @@ public class TileMap implements Paintable{
 					}
 					
 					if(layer3[b][a].getImage() > 0){
-						g.drawImage(images[layer3[b][a].getImage()], 
+						g.drawImage(GameConstants.getTileImages()[layer3[b][a].getImage()], 
 								(b * tileWidth) + (int)xOffSet, 
 								(a * tileHeight) + (int)yOffSet, 
 								tileWidth, 
