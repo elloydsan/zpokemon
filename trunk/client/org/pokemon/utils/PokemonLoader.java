@@ -31,7 +31,7 @@ public class PokemonLoader {
 	
 	private static short id; 
 	private static String name;
-	private static short[] type; 
+	private static byte[] type; 
 	private static short hp;
 	private static short attack;
 	private static short defense;
@@ -71,9 +71,9 @@ public class PokemonLoader {
 						break;
 					case 2: 
 						splitString = line.split(",\\s*");
-						type = new short[splitString.length];
+						type = new byte[splitString.length];
 						for(int j = 0 ; j < splitString.length ; j++)
-							type[j] = (short) Integer.parseInt(splitString[j]);
+							type[j] = Byte.parseByte(splitString[j]);
 						break;
 					case 3:
 						hp = (short) Integer.parseInt(line);

@@ -11,7 +11,7 @@ public class PokemonEntity {
 	private short id; 
 	private String name;
 	private char gender;
-	private short[] type;
+	private byte[] type;
 	private short hp;
 	private short attack;
 	private short defense;
@@ -49,7 +49,7 @@ public class PokemonEntity {
 	 * @param evolvesInto
 	 * @param evolveLevels
 	 */
-	public PokemonEntity(short id, String name, short[] type, short hp, short attack, short defense, short spAttack, 
+	public PokemonEntity(short id, String name, byte[] type, short hp, short attack, short defense, short spAttack, 
 	short spDefense, short speed, short statTotal, double chanceOfBeingMale, short captureRate, short exp,
 	short[] startingMoves, short[] possibleMoves, short[] moveLevels, short[] evolvesInto, short[] evolveLevels) {
 			
@@ -113,11 +113,11 @@ public class PokemonEntity {
 		this.gender = gender;
 	}
 
-	public short[] getType() {
+	public byte[] getType() {
 		return type;
 	}
 
-	public void setType(short[] type) {
+	public void setType(byte[] type) {
 		this.type = type;
 	}
 
