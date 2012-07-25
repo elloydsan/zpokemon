@@ -1,0 +1,9 @@
+PoisonPowder
+12
+2
+35
+0
+75
+0
+0
+False
