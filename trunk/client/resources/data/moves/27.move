@@ -1,0 +1,9 @@
+Sand-Attack
+9
+2
+15
+0
+100
+0
+0
+False

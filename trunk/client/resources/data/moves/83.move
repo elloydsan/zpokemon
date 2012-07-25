@@ -1,0 +1,9 @@
+ThunderShock
+3
+1
+30
+40
+100
+0
+0
+True

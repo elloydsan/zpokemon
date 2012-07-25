@@ -1,0 +1,9 @@
+SmokeScreen
+11
+2
+20
+0
+100
+0
+0
+False
