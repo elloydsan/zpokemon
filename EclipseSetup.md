@@ -1,0 +1,25 @@
+This is a simple tutorial on how to get started with the ZPokemon client and server.
+
+## Step 1 - SVN Checkout: ##
+First you must checkout the SVN onto your computer. You must have a SVN client installed on your computer for this to work. You can download TortoiseSVN from here: http://tortoisesvn.net/
+
+  * Create a folder on your desktop or desired location
+  * Right click on the folder and select SVN checkout
+  * In the Checkout screen fill in the URL of repository as:    http://zpokemon.googlecode.com/svn/trunk/
+
+## Step 2 - Create Projects: ##
+Next you must create the eclipse projects.
+
+  * Open eclipse and select **File->new Java Project**
+  * Enter in the project name of **zpokemon**
+  * Select finish
+  * Repeat the steps again but this time make the project **zpokemon\_server**
+
+## Step 3 - Copy code to eclipse: ##
+And finally we have to copy the source files into our project.
+
+  * Open up the SVN folder you checked out
+  * Drag the contents of client into **zpokemon's src** folder
+  * Repeat for the server
+
+![https://ossietronics.com/download/pic1.png](https://ossietronics.com/download/pic1.png)
